@@ -6,15 +6,15 @@
 #    By: vroche <vroche@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/03/16 10:49:38 by vroche            #+#    #+#              #
-#    Updated: 2016/12/03 12:20:43 by vroche           ###   ########.fr        #
+#    Updated: 2016/12/03 14:05:01 by vroche           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ft_irc
 
-NAME_CLIENT = ft_nm
+NAME_CLIENT = client
 
-NAME_SERVEUR = ft_otool
+NAME_SERVER = serveur
 
 LIB = -L./libft -lft
 
@@ -22,27 +22,27 @@ HDR = -I./libft/includes -I./includes
 
 FLAGS = -Wall -Wextra -Werror -g
 
-C_CLIENT =	srcs/irc_client.c
+C_CLIENT =	srcs/server/irc_server.c
 
 O_CLIENT = $(C_CLIENT:.c=.o)
 
-C_SERVEUR =	srcs/irc_serveur.c
+C_SERVER =	srcs/server/irc_server.c
 
-O_SERVEUR = $(C_SERVEUR:.c=.o)
+O_SERVER = $(C_SERVER:.c=.o)
 
-C = $(C_CLIENT) $(C_SERVEUR) $(C_COMMON)
+C = $(C_CLIENT) $(C_SERVER) $(C_COMMON)
 
-O = $(O_CLIENT) $(O_SERVEUR) $(O_COMMON)
+O = $(O_CLIENT) $(O_SERVER) $(O_COMMON)
 
 all: $(NAME)
 
-$(NAME): $(NAME_CLIENT) $(NAME_SERVEUR)
+$(NAME): $(NAME_CLIENT) $(NAME_SERVER)
 
 $(NAME_CLIENT): $(O_CLIENT) 
 	make -C ./libft
 	clang $(FLAGS) $(HDR) $(LIB) $^ -o $@
 
-$(NAME_SERVEUR): $(O_SERVEUR)
+$(NAME_SERVER): $(O_SERVER)
 	make -C ./libft
 	clang $(FLAGS) $(HDR) $(LIB) $^ -o $@
 
@@ -55,7 +55,7 @@ clean:
 
 fclean: clean
 	make -C ./libft fclean
-	rm -f $(NAME_CLIENT) $(NAME_SERVEUR)
+	rm -f $(NAME_CLIENT) $(NAME_SERVER)
 
 re: fclean all
 
