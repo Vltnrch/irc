@@ -6,7 +6,7 @@
 #    By: vroche <vroche@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/03/16 10:49:38 by vroche            #+#    #+#              #
-#    Updated: 2016/12/03 14:05:01 by vroche           ###   ########.fr        #
+#    Updated: 2016/12/05 18:54:46 by vroche           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,17 +16,19 @@ NAME_CLIENT = client
 
 NAME_SERVER = serveur
 
-LIB = -L./libft -lft
+LIB = -L./libft -lft -lreadline
 
 HDR = -I./libft/includes -I./includes
 
 FLAGS = -Wall -Wextra -Werror -g
 
-C_CLIENT =	srcs/server/irc_server.c
+C_CLIENT =	srcs/client/irc_client.c \
+			srcs/server/circular_buffer.c
 
 O_CLIENT = $(C_CLIENT:.c=.o)
 
-C_SERVER =	srcs/server/irc_server.c
+C_SERVER =	srcs/server/irc_server.c \
+			srcs/server/circular_buffer.c
 
 O_SERVER = $(C_SERVER:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:27:46 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/03 14:29:06 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/05 19:45:03 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	ft_perror_exit(const char *str)
 {
-	dprintf(2, "Error : %s", str);
+	dprintf(2, "Error : %s\n", str);
 	exit(EXIT_FAILURE);
 }
 
@@ -70,7 +70,7 @@ static void	ircs_init_fd(t_ircs *ircs)
 		if (ircs->fds[i].type != FD_FREE)
 		{
 			FD_SET(i, &(ircs->fd_read));
-			if (ft_strlen(ircs->fds[i].buf_write) > 0)
+			if (c_buf_len(&(ircs->fds[i].c_buf_send)) > 0)
 				FD_SET(i, &(ircs->fd_write));
 			ircs->max = MAX(ircs->max, i);
 		}
@@ -80,11 +80,11 @@ static void	ircs_init_fd(t_ircs *ircs)
 
 static void	ircs_read(t_ircs *ircs, int s)
 {
-	int	r;
-	int	i;
+	int		r;
+	int		i;
+	char	buff[BUF_SIZE_CBUF + 1];
 
-	r = recv(s, ircs->fds[s].buf_read, BUF_SIZE, 0);
-	printf("client #%d send : %s\n", s, ircs->fds[s].buf_read);
+	r = recv(s, &buff, BUF_SIZE_CBUF, 0);
 	if (r <= 0)
 	{
 		close(s);
@@ -93,14 +93,14 @@ static void	ircs_read(t_ircs *ircs, int s)
 	}
 	else
 	{
+		buff[r] = 0;
+		c_buf_write(&(ircs->fds[s].c_buf_recv), buff);
+		printf("client #%d send : %s\n", s, buff);
 		i = 0;
 		while (i < ircs->maxfd)
 		{
 			if ((ircs->fds[i].type == FD_CLIENT) && (i != s))
-			{
-				send(i, ircs->fds[s].buf_read, r, 0);
-				printf("client #%d send to #%d : %s\n", s, i, ircs->fds[s].buf_read);
-			}
+				c_buf_write(&(ircs->fds[i].c_buf_send), buff);
 			i++;
 		}
 	}
@@ -108,8 +108,11 @@ static void	ircs_read(t_ircs *ircs, int s)
 
 static void	ircs_write(t_ircs *ircs, int s)
 {
-	if (ircs)
-		printf("Coucou ircs_write %d !\n", s);
+	char	buff[BUF_SIZE_CBUF + 1];
+
+	c_buf_read(&(ircs->fds[s].c_buf_send), buff);
+	send(s, buff, ft_strlen(buff), 0);
+	printf("send to #%d : %s\n", s, buff);
 }
 
 static void	ircs_accept(t_ircs *ircs, int s)
@@ -123,6 +126,8 @@ static void	ircs_accept(t_ircs *ircs, int s)
 		ft_perror_exit("accept");
 	printf("New client #%d from %s:%d\n", ns, inet_ntoa(nsa_in.sin_addr), ntohs(nsa_in.sin_port));
 	ircs->fds[ns].type = FD_CLIENT;
+	c_buf_init(&(ircs->fds[ns].c_buf_recv));
+	c_buf_init(&(ircs->fds[ns].c_buf_send));
 }
 
 static void	ircs_check_fd(t_ircs *ircs)
@@ -162,15 +167,8 @@ int			main(int ac, char **av)
 	while (42)
 	{
 		ircs_init_fd(&ircs);
-		/*FD_ZERO(&fds);
-		FD_SET(0, &fds);
-		FD_SET(ptyfd, &fds);*/
 		if ((ircs.r = select(ircs.max + 1, &(ircs.fd_read), &(ircs.fd_write), NULL, NULL)) == -1)
 			ft_perror_exit("select");
-		/*if (FD_ISSET(0, &fds))
-			//ft_script_daddy_stdintopty(ptyfd, file, opt, &scrpt);
-		if (FD_ISSET(ptyfd, &fds))
-			//ft_script_daddy_ptytofile(ptyfd, file, opt, &scrpt);*/
 		ircs_check_fd(&ircs);
 	}
 	return (EXIT_SUCCESS);
