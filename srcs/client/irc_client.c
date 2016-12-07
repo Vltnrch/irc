@@ -6,17 +6,11 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:27:46 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/05 20:21:34 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/07 19:32:20 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc_client.h"
-
-static void	ft_perror_exit(const char *str)
-{
-	dprintf(2, "Error : %s\n", str);
-	exit(EXIT_FAILURE);
-}
 
 static t_ircc	*get_ircc_struct(void)
 {
@@ -32,16 +26,21 @@ static void	ircc_sendtosock(char *line)
 {
 	t_ircc	*ircc;
 
-	ircc = get_ircc_struct();
-	c_buf_write(&(ircc->c_buf_send), line);
-	if (!strcmp(line, "exit"))
+	if (line && *line)
 	{
-		rl_callback_handler_remove();
-		printf("Bye !\n");
-		exit(0);
+		ircc = get_ircc_struct();
+		c_buf_write(&(ircc->c_buf_send), line);
+		if (!strcmp(line, "exit"))
+		{
+			rl_callback_handler_remove();
+			printf("Bye !\n");
+			exit(0);
+		}
+		*rl_line_buffer = 0;
+		add_history(line);
+		ft_printf("\33[1A\33[2K");
 	}
-	*rl_line_buffer = 0;
-	rl_callback_handler_install ("$IRC>> ", &ircc_sendtosock);
+	//rl_callback_handler_install ("$IRC>> ", &ircc_sendtosock);
 }
 
 static void	ircc_init_socket(t_ircc *ircc)
@@ -114,6 +113,12 @@ static void	ircc_check_fd(t_ircc *ircc)
 		ircc_write(ircc);
 }
 
+static int	ircc_bin_tab(int a, int b)
+{
+	a = b;
+	return (1);
+}
+
 int			main(int ac, char **av)
 {
 	t_ircc			*ircc;
@@ -128,7 +133,9 @@ int			main(int ac, char **av)
   	ircc->port = ft_atoi(av[2]);
 	ircc_init_socket(ircc);
 	printf("IRC Client launch on ip : %s port : %d\n", ircc->ip, ircc->port);
-	rl_callback_handler_install ("$IRC>> ", &ircc_sendtosock);
+	rl_callback_handler_install("$IRC>> ", &ircc_sendtosock);
+	using_history();
+	rl_bind_key('\t', &ircc_bin_tab);
 	while (42)
 	{
 		ircc_init_fd(ircc);

@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/05 15:19:10 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/05 16:01:23 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/06 16:57:52 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,20 @@ size_t	c_buf_len(t_c_buf *c_buf)
 		return ((size_t)(c_buf->write - c_buf->read));
 	else
 		return ((size_t)(BUF_SIZE_CBUF + c_buf->write - c_buf->read));
+}
+
+int		c_buf_complete_cmd(t_c_buf *c_buf)
+{
+	char *tmp;
+
+	tmp = c_buf->read;
+	while (tmp != c_buf->write)
+	{
+		if (*tmp == '\r' && (tmp + 1) != c_buf->write && *(tmp + 1) == '\n')
+			return (1);
+		tmp++;
+		if (tmp == c_buf->buf + BUF_SIZE_CBUF)
+			tmp = c_buf->buf;
+	}
+	return (0);
 }

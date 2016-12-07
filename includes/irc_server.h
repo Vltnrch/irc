@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/05 16:04:08 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/06 17:55:26 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@
 # include <arpa/inet.h>
 # include <stdio.h>
 # include "libft.h"
+# include "ft_printf.h"
 # include "circular_buffer.h"
+# include "manage.h"
 
 # define FD_FREE		0
 # define FD_SERV		1
@@ -29,11 +31,17 @@
 
 # define BACKLOG_IRCS	42
 
+# define MAXCHAN		20
+# define MAXCHAN_NAME	10
+# define MAXNICK		9
+
 # define MAX(x,y)		((x > y) ? x : y)
 
 typedef struct	s_fd
 {
 	int			type;
+	char		nick[MAXNICK + 1];
+	int			chan;
 	t_c_buf		c_buf_recv;
 	t_c_buf		c_buf_send;
 }				t_fd;
@@ -41,6 +49,7 @@ typedef struct	s_fd
 typedef struct	s_ircs
 {
 	t_fd		*fds;
+	char		*chan[MAXCHAN];
 	int			port;
 	int			maxfd;
 	int			max;
@@ -48,5 +57,12 @@ typedef struct	s_ircs
 	fd_set		fd_read;
 	fd_set		fd_write;
 }				t_ircs;
+
+void			ircs_init_fd(t_ircs *ircs);
+void			ircs_check_fd(t_ircs *ircs);
+
+void			ircs_cmd_check(t_ircs *ircs, int s);
+
+void			ft_perror_exit(const char *str);
 
 #endif

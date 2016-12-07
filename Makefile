@@ -6,7 +6,7 @@
 #    By: vroche <vroche@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/03/16 10:49:38 by vroche            #+#    #+#              #
-#    Updated: 2016/12/05 18:54:46 by vroche           ###   ########.fr        #
+#    Updated: 2016/12/07 14:57:32 by vroche           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,21 +16,26 @@ NAME_CLIENT = client
 
 NAME_SERVER = serveur
 
-LIB = -L./libft -lft -lreadline
+LIB = -L./libft -lft ~/.brew/opt/readline/lib/libreadline.a -ltermcap
 
-HDR = -I./libft/includes -I./includes
+HDR = -I./libft/includes -I./includes -I/Users/vroche/.brew/opt/readline/include
 
 FLAGS = -Wall -Wextra -Werror -g
 
-C_CLIENT =	srcs/client/irc_client.c \
-			srcs/server/circular_buffer.c
+C_CLIENT =	srcs/client/irc_client.c 
 
 O_CLIENT = $(C_CLIENT:.c=.o)
 
 C_SERVER =	srcs/server/irc_server.c \
-			srcs/server/circular_buffer.c
+			srcs/server/ircs_select.c \
+			srcs/server/ircs_cmd.c 
 
 O_SERVER = $(C_SERVER:.c=.o)
+
+C_COMMON =	srcs/common/circular_buffer.c \
+			srcs/common/manage.c
+
+O_COMMON = $(C_COMMON:.c=.o)
 
 C = $(C_CLIENT) $(C_SERVER) $(C_COMMON)
 
@@ -40,11 +45,11 @@ all: $(NAME)
 
 $(NAME): $(NAME_CLIENT) $(NAME_SERVER)
 
-$(NAME_CLIENT): $(O_CLIENT) 
+$(NAME_CLIENT): $(O_COMMON) $(O_CLIENT) 
 	make -C ./libft
 	clang $(FLAGS) $(HDR) $(LIB) $^ -o $@
 
-$(NAME_SERVER): $(O_SERVER)
+$(NAME_SERVER): $(O_COMMON) $(O_SERVER)
 	make -C ./libft
 	clang $(FLAGS) $(HDR) $(LIB) $^ -o $@
 
