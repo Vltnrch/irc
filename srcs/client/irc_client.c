@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:27:46 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/07 19:32:20 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/08 14:14:10 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,25 +22,40 @@ static t_ircc	*get_ircc_struct(void)
 	return (ircc);
 }
 
+static void	ircc_core(t_ircc *ircc, char *line)
+{
+	char	**tab;
+
+	if (!(tab = ft_spacesplit(line)))
+		ft_perror_exit("ft_spacesplit");
+	if (tab[0] && *tab[0])
+		ircc_cmd(ircc, tab, line);
+	ft_freetab(tab);
+}
+
 static void	ircc_sendtosock(char *line)
 {
 	t_ircc	*ircc;
 
-	if (line && *line)
+	if (line)
 	{
-		ircc = get_ircc_struct();
-		c_buf_write(&(ircc->c_buf_send), line);
-		if (!strcmp(line, "exit"))
+		if (*line)
 		{
-			rl_callback_handler_remove();
-			printf("Bye !\n");
-			exit(0);
+			ircc = get_ircc_struct();
+			if (!strcmp(line, "exit"))
+			{
+				rl_callback_handler_remove();
+				printf("Bye !\n");
+				exit(0);
+			}
+			ircc_core(ircc, line);
+			*rl_line_buffer = 0;
+			add_history(line);
 		}
-		*rl_line_buffer = 0;
-		add_history(line);
 		ft_printf("\33[1A\33[2K");
 	}
-	//rl_callback_handler_install ("$IRC>> ", &ircc_sendtosock);
+	else
+		ft_printf("\33[2K\r");
 }
 
 static void	ircc_init_socket(t_ircc *ircc)
@@ -63,54 +78,6 @@ static void	ircc_init_socket(t_ircc *ircc)
 	ircc->max = ircc->socket + 1;
 	c_buf_init(&(ircc->c_buf_recv));
 	c_buf_init(&(ircc->c_buf_send));
-}
-
-static void	ircc_init_fd(t_ircc *ircc)
-{
-	FD_ZERO(&(ircc->fd_read));
-	FD_ZERO(&(ircc->fd_write));
-	FD_SET(0, &(ircc->fd_read));
-	FD_SET(ircc->socket, &(ircc->fd_read));
-	if (c_buf_len(&(ircc->c_buf_send)) > 0)
-		FD_SET(ircc->socket, &(ircc->fd_write));
-}
-
-static void	ircc_read(t_ircc *ircc)
-{
-	int		r;
-	char	buff[BUF_SIZE_CBUF + 1];
-
-	r = recv(ircc->socket, &buff, BUF_SIZE_CBUF, 0);
-	if (r <= 0)
-	{
-		close(ircc->socket);
-		rl_callback_handler_remove();
-		printf("Server gone away, Bye !\n");
-		exit(0);
-	}
-	else
-	{
-		buff[r] = 0;
-		ft_printf("\33[2K\r%s\n%s%s", buff, "$IRC>> ", rl_line_buffer);
-	}
-}
-
-static void	ircc_write(t_ircc *ircc)
-{
-	char	buff[BUF_SIZE_CBUF + 1];
-
-	c_buf_read(&(ircc->c_buf_send), buff);
-	send(ircc->socket, buff, ft_strlen(buff), 0);
-}
-
-static void	ircc_check_fd(t_ircc *ircc)
-{
-	if (FD_ISSET(0, &(ircc->fd_read)))
-		rl_callback_read_char();
-	if (FD_ISSET(ircc->socket, &(ircc->fd_read)))
-		ircc_read(ircc);
-	if (FD_ISSET(ircc->socket, &(ircc->fd_write)))
-		ircc_write(ircc);
 }
 
 static int	ircc_bin_tab(int a, int b)

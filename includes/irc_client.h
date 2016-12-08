@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/06 16:05:28 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/08 14:21:51 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,13 @@
 
 # define MAX(x,y)		((x > y) ? x : y)
 
+# define CMD_MSG	"0"
+# define CMD_NICK	"1"
+# define CMD_JOIN	"2"
+# define CMD_LEAVE	"3"
+# define CMD_MP		"4"
+# define CMD_WHO	"5"
+
 typedef struct	s_ircc
 {
 	int			port;
@@ -42,5 +49,10 @@ typedef struct	s_ircc
 	t_c_buf		c_buf_recv;
 	t_c_buf		c_buf_send;
 }				t_ircc;
+
+void			ircc_check_fd(t_ircc *ircc);
+void			ircc_init_fd(t_ircc *ircc);
+
+void			ircc_cmd(t_ircc *ircc, char **tab, char *line);
 
 #endif

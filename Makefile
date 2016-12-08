@@ -6,7 +6,7 @@
 #    By: vroche <vroche@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/03/16 10:49:38 by vroche            #+#    #+#              #
-#    Updated: 2016/12/07 14:57:32 by vroche           ###   ########.fr        #
+#    Updated: 2016/12/08 17:04:01 by vroche           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,9 @@ HDR = -I./libft/includes -I./includes -I/Users/vroche/.brew/opt/readline/include
 
 FLAGS = -Wall -Wextra -Werror -g
 
-C_CLIENT =	srcs/client/irc_client.c 
+C_CLIENT =	srcs/client/irc_client.c \
+			srcs/client/ircc_select.c \
+			srcs/client/ircc_cmd.c 
 
 O_CLIENT = $(C_CLIENT:.c=.o)
 
@@ -33,7 +35,8 @@ C_SERVER =	srcs/server/irc_server.c \
 O_SERVER = $(C_SERVER:.c=.o)
 
 C_COMMON =	srcs/common/circular_buffer.c \
-			srcs/common/manage.c
+			srcs/common/manage.c \
+			srcs/common/ft_spacesplit.c
 
 O_COMMON = $(C_COMMON:.c=.o)
 

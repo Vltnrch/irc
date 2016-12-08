@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:27:46 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/06 18:43:30 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/08 15:30:43 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 static void	ircs_init_struct(t_ircs *ircs, char **av)
 {
-	int				i;
 	struct rlimit	rl;
 
 	if (getrlimit(RLIMIT_NOFILE, &rl) == -1)
@@ -23,12 +22,6 @@ static void	ircs_init_struct(t_ircs *ircs, char **av)
 	if (!(ircs->fds = (t_fd *)malloc(sizeof(t_fd) * ircs->maxfd)))
 		ft_perror_exit("malloc fds");
 	ft_bzero(ircs->fds, sizeof(t_fd) * ircs->maxfd);
-	i = 0;
-	while (i < ircs->maxfd)
-	{
-		ircs->fds[i].type = FD_FREE;
-		i++;
-	}
   	ircs->port = ft_atoi(av[1]);
 }
 
@@ -52,6 +45,24 @@ static void	ircs_init_socket(t_ircs *ircs)
 	ircs->fds[s].type = FD_SERV;
 }
 
+static void ircs_prep_cmd(t_ircs *ircs, int s)
+{
+	char	**tab;
+	char	buff[BUF_SIZE_CBUF + 1];
+
+	while (c_buf_len(&(ircs->fds[s].c_buf_recv)) > 0)
+	{
+		if (!c_buf_complete_cmd(&(ircs->fds[s].c_buf_recv)))
+			return ;
+		c_buf_read_cmd(&(ircs->fds[s].c_buf_recv), buff);
+		if (!(tab = ft_strsplit(buff, ':')))
+			ft_perror_exit("ft_strsplit");
+		if (tab[0] && *tab[0])
+			ircs_cmd(ircs, tab, buff, s);
+		ft_freetab(tab);
+	}
+}
+
 static void	ircs_core(t_ircs *ircs)
 {
 	int	i;
@@ -59,8 +70,8 @@ static void	ircs_core(t_ircs *ircs)
 	i = 0;
 	while (i < ircs->maxfd)
 	{
-		if ((ircs->fds[i].type == FD_CLIENT) && (c_buf_len(&(ircs->fds[i].c_buf_recv)) > 0))
-			ircs_cmd_check(ircs, i);
+		if (ircs->fds[i].type == FD_CLIENT)
+			ircs_prep_cmd(ircs, i);
 		i++;
 	}
 }

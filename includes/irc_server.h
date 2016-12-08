@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/06 17:55:26 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/08 14:30:55 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,13 @@
 # define FD_CLIENT		2
 
 # define BACKLOG_IRCS	42
+
+# define CMD_MSG	0
+# define CMD_NICK	1
+# define CMD_JOIN	2
+# define CMD_LEAVE	3
+# define CMD_MP		4
+# define CMD_WHO	5
 
 # define MAXCHAN		20
 # define MAXCHAN_NAME	10
@@ -61,7 +68,7 @@ typedef struct	s_ircs
 void			ircs_init_fd(t_ircs *ircs);
 void			ircs_check_fd(t_ircs *ircs);
 
-void			ircs_cmd_check(t_ircs *ircs, int s);
+void			ircs_cmd(t_ircs *ircs, char **tab, char *buff, int s);
 
 void			ft_perror_exit(const char *str);
 
