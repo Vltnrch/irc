@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 16:12:13 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/08 17:49:42 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/13 12:04:56 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,6 @@ static void	ircs_cmd_mp(t_ircs *ircs, char **tab, char *buff, int s)
 {
 	t_fd	*fd;
 	int		user;
-	char	*msg;
 
 	fd = &(ircs->fds[s]);
 	if (!ircs_havenick(fd))
@@ -196,19 +195,20 @@ static void	ircs_cmd_mp(t_ircs *ircs, char **tab, char *buff, int s)
 			c_buf_write(&(fd->c_buf_send), "-1:-1:Can't find this user !:\r\n");
 		else
 		{
+			buff[ft_strlen(buff) - 1] = 0;
 			c_buf_write(&(ircs->fds[user].c_buf_send), fd->nick);
 			c_buf_write(&(ircs->fds[user].c_buf_send), ":");
 			c_buf_write(&(ircs->fds[user].c_buf_send), "MP");
 			c_buf_write(&(ircs->fds[user].c_buf_send), ":");
-			if (tab[2] && (msg = ft_strstr(buff, tab[2])))
-				c_buf_write(&(ircs->fds[user].c_buf_send), msg);
+			c_buf_write(&(ircs->fds[user].c_buf_send), buff + ft_strlen(tab[0]) + ft_strlen(tab[1]) + 2);
+			c_buf_write(&(ircs->fds[user].c_buf_send), ":");
 			c_buf_write(&(ircs->fds[user].c_buf_send), "\r\n");
 			c_buf_write(&(fd->c_buf_send), ircs->fds[user].nick);
 			c_buf_write(&(fd->c_buf_send), ":");
 			c_buf_write(&(fd->c_buf_send), "MP to");
 			c_buf_write(&(fd->c_buf_send), ":");
-			if (tab[2] && (msg = ft_strstr(buff, tab[2])))
-				c_buf_write(&(fd->c_buf_send), msg);
+			c_buf_write(&(fd->c_buf_send), buff + ft_strlen(tab[0]) + ft_strlen(tab[1]) + 2);
+			c_buf_write(&(fd->c_buf_send), ":");
 			c_buf_write(&(fd->c_buf_send), "\r\n");
 		}
 	}

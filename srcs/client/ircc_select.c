@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/08 13:08:23 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/08 17:00:31 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/13 11:43:56 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void	ircc_read(t_ircc *ircc)
 		buff[r - 3] = 0;
 		ft_printf("\33[2K\r");
 		ircc_print_recv(buff);
-		ft_printf("%s%s", "$IRC>> ", rl_line_buffer);
+		rl_forced_update_display();
 	}
 }
 
