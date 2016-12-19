@@ -6,18 +6,14 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/08 13:08:23 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/19 16:49:36 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/19 18:17:41 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc_client.h"
 
-static void	ircc_print_recv(char *buff)
+void		ircc_print_recv(char **tab, char *buff)
 {
-	char	**tab;
-
-	if (!(tab = ft_strsplit(buff, ':')))
-		ft_perror_exit("ft_strsplit");
 	if (tab[0] && tab[1] && tab[2])
 	{
 		if (ft_atoi(tab[0]) == -1 && ft_atoi(tab[1]) == -1 && ft_atoi(tab[2]) == -1)
@@ -49,10 +45,8 @@ static void	ircc_read(t_ircc *ircc)
 	}
 	else
 	{
-		buff[r - 3] = 0;
-		ft_printf("\33[2K\r");
-		ircc_print_recv(buff);
-		rl_forced_update_display();
+		buff[r] = 0;
+		c_buf_write(&(ircc->c_buf_recv), buff);
 	}
 }
 

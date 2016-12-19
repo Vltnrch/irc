@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:27:46 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/13 12:19:05 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/19 18:20:15 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static t_ircc	*get_ircc_struct(void)
 	return (ircc);
 }
 
-static void	ircc_core(t_ircc *ircc, char *line)
+static void	ircc_prep_cmd(t_ircc *ircc, char *line)
 {
 	char	**tab;
 
@@ -48,7 +48,7 @@ static void	ircc_sendtosock(char *line)
 				printf("Bye !\n");
 				exit(0);
 			}
-			ircc_core(ircc, line);
+			ircc_prep_cmd(ircc, line);
 			*rl_line_buffer = 0;
 			add_history(line);
 		}
@@ -86,6 +86,27 @@ static int	ircc_bin_tab(int a, int b)
 	return (1);
 }
 
+static void	ircc_core(t_ircc *ircc)
+{
+	char	**tab;
+	char	buff[BUF_SIZE_CBUF + 1];
+
+	while (c_buf_len(&(ircc->c_buf_recv)) > 0)
+	{
+		if (!c_buf_complete_cmd(&(ircc->c_buf_recv)))
+			return ;
+		c_buf_read_cmd(&(ircc->c_buf_recv), buff);
+		if (buff[ft_strlen(buff) - 1] == ':')
+			buff[ft_strlen(buff) - 1] = 0;
+		if (!(tab = ft_strsplit(buff, ':')))
+			ft_perror_exit("ft_strsplit");
+		ft_printf("\33[2K\r");
+		ircc_print_recv(tab, buff);
+		rl_forced_update_display();
+		ft_freetab(tab);
+	}
+}
+
 int			main(int ac, char **av)
 {
 	t_ircc			*ircc;
@@ -109,6 +130,7 @@ int			main(int ac, char **av)
 		if ((ircc->r = select(ircc->max, &(ircc->fd_read), &(ircc->fd_write), NULL, NULL)) == -1)
 			ft_perror_exit("select");
 		ircc_check_fd(ircc);
+		ircc_core(ircc);
 	}
 	rl_callback_handler_remove();
 	return (EXIT_SUCCESS);

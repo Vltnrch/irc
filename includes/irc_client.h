@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/19 16:32:39 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/19 18:13:49 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,7 @@ void			ircc_check_fd(t_ircc *ircc);
 void			ircc_init_fd(t_ircc *ircc);
 
 void			ircc_cmd(t_ircc *ircc, char **tab, char *line);
+
+void			ircc_print_recv(char **tab, char *buff);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 16:12:13 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/19 16:38:33 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/19 18:20:25 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,35 @@ static int	ircs_chancreate(t_ircs *ircs, char *chan)
 	return (i);
 }
 
+static void	ircs_cmd_leave(t_ircs *ircs, int s)
+{
+	t_fd	*fd;
+	int		i;
+	int 	chan;
+
+	fd = &(ircs->fds[s]);
+	if (fd->chan == -1)
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You're not in a channel...:\r\n");
+	else
+	{
+		chan = fd->chan;
+		fd->chan = -1;
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Channel ");
+		c_buf_write(&(fd->c_buf_send), ircs->chan[chan]);
+		c_buf_write(&(fd->c_buf_send), " leave !:\r\n");
+		i = 0;
+		while (i < ircs->maxfd)
+		{
+			if (ircs->fds[i].type == FD_CLIENT && ircs->fds[i].chan == chan)
+				return ;
+			i++;
+		}
+		ft_printf("Channel %s deleted\n", ircs->chan[chan]);
+		free(ircs->chan[chan]);
+		ircs->chan[chan] = NULL;
+	}
+}
+
 static void	ircs_cmd_join(t_ircs *ircs, char **tab, int s)
 {
 	int		num_chat;
@@ -112,25 +141,13 @@ static void	ircs_cmd_join(t_ircs *ircs, char **tab, int s)
 			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Can't create this channel because full !:\r\n");
 		else
 		{
+			if (fd->chan >= 0)
+				ircs_cmd_leave(ircs, s);
 			fd->chan = num_chat;
 			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Channel ");
 			c_buf_write(&(fd->c_buf_send), tab[1]);
 			c_buf_write(&(fd->c_buf_send), " join !:\r\n");
 		}
-	}
-}
-
-static void	ircs_cmd_leave(t_ircs *ircs, int s)
-{
-	t_fd	*fd;
-
-	fd = &(ircs->fds[s]);
-	if (fd->chan == -1)
-		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You're not in a channel...:\r\n");
-	else
-	{
-		fd->chan = -1;
-		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Channel leave !:\r\n");
 	}
 }
 
@@ -197,7 +214,8 @@ static void	ircs_cmd_mp(t_ircs *ircs, char **tab, char *buff, int s)
 			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Can't find this user !:\r\n");
 		else
 		{
-			buff[ft_strlen(buff) - 1] = 0;
+			if (buff[ft_strlen(buff) - 1] == ':')
+				buff[ft_strlen(buff) - 1] = 0;
 			c_buf_write(&(ircs->fds[user].c_buf_send), CMD_MP_S);
 			c_buf_write(&(ircs->fds[user].c_buf_send), ":");
 			c_buf_write(&(ircs->fds[user].c_buf_send), fd->nick);
