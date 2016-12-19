@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 15:58:08 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/13 11:42:52 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/19 16:59:38 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ static void	ircs_accept(t_ircs *ircs, int s)
 		ft_perror_exit("accept");
 	ft_printf("New client #%d from %s:%d\n", ns, inet_ntoa(nsa_in.sin_addr), ntohs(nsa_in.sin_port));
 	ft_bzero(&(ircs->fds[ns]), sizeof(t_fd));
-	ft_bzero(ircs->chan, sizeof(char *) * MAXCHAN);
 	ircs->fds[ns].type = FD_CLIENT;
 	ircs->fds[ns].chan = -1;
 	c_buf_init(&(ircs->fds[ns].c_buf_recv));

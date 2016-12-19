@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/08 14:30:55 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/19 16:38:54 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,13 @@
 # define CMD_LEAVE	3
 # define CMD_MP		4
 # define CMD_WHO	5
+
+# define CMD_MSG_S		"0"
+# define CMD_NICK_S		"1"
+# define CMD_JOIN_S		"2"
+# define CMD_LEAVE_S	"3"
+# define CMD_MP_S		"4"
+# define CMD_WHO_S		"5"
 
 # define MAXCHAN		20
 # define MAXCHAN_NAME	10

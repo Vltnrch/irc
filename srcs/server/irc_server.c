@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:27:46 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/08 15:30:43 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/19 16:22:58 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static void	ircs_init_struct(t_ircs *ircs, char **av)
 	if (!(ircs->fds = (t_fd *)malloc(sizeof(t_fd) * ircs->maxfd)))
 		ft_perror_exit("malloc fds");
 	ft_bzero(ircs->fds, sizeof(t_fd) * ircs->maxfd);
+	ft_bzero(ircs->chan, sizeof(char *) * MAXCHAN);
   	ircs->port = ft_atoi(av[1]);
 }
 

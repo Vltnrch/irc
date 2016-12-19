@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/08 14:21:51 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/19 16:32:39 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 
 # define MAX(x,y)		((x > y) ? x : y)
 
+# define CMD_SERV	"-1"
 # define CMD_MSG	"0"
 # define CMD_NICK	"1"
 # define CMD_JOIN	"2"

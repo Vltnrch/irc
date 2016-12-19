@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 16:12:13 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/13 12:04:56 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/19 16:38:33 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,22 +37,22 @@ static void	ircs_cmd_nick(t_ircs *ircs, char **tab, int s)
 
 	fd = &(ircs->fds[s]);
 	if (ircs_havenick(fd))
-		c_buf_write(&(fd->c_buf_send), "-1:-1:You already set a nick !:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You already set a nick !:\r\n");
 	else
 	{
 		if (!tab[1] || !ft_strlen(tab[1]))
-			c_buf_write(&(fd->c_buf_send), "-1:-1:Common... choose a nick !:\r\n");
+			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Common... choose a nick !:\r\n");
 		else if (ft_strlen(tab[1]) > 9)
-			c_buf_write(&(fd->c_buf_send), "-1:-1:Max nick's lenght is 9 !:\r\n");
+			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Max nick's lenght is 9 !:\r\n");
 		else if (!ft_str_isalpha(tab[1]))
-			c_buf_write(&(fd->c_buf_send), "-1:-1:Nick need to be only alpha !:\r\n");
+			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Nick need to be only alpha !:\r\n");
 		else if (ircs_nickexist(ircs, tab[1]))
-			c_buf_write(&(fd->c_buf_send), "-1:-1:This nick is already in use !:\r\n");
+			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:This nick is already in use !:\r\n");
 		else
 		{
 			ft_strcpy(fd->nick, tab[1]);
 			ft_printf("Client #%d set nick to : %s\n", s, fd->nick);
-			c_buf_write(&(fd->c_buf_send), "-1:-1:Nick ");
+			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Nick ");
 			c_buf_write(&(fd->c_buf_send), fd->nick);
 			c_buf_write(&(fd->c_buf_send), " set:\r\n");
 		}
@@ -95,25 +95,25 @@ static void	ircs_cmd_join(t_ircs *ircs, char **tab, int s)
 	fd = &(ircs->fds[s]);
 	if (!ircs_havenick(fd))
 	{
-		c_buf_write(&(fd->c_buf_send), "-1:-1:You need to set a nick before !:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You need to set a nick before !:\r\n");
 		return ;
 	}
 	if (!tab[1] || !ft_strlen(tab[1]))
-		c_buf_write(&(fd->c_buf_send), "-1:-1:Set channel name...:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Set channel name...:\r\n");
 	else if (ft_strlen(tab[1]) > 10)
-		c_buf_write(&(fd->c_buf_send), "-1:-1:Max channel len is 10 !:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Max channel len is 10 !:\r\n");
 	else if (!ft_str_isalpha(tab[1] + 1))
-			c_buf_write(&(fd->c_buf_send), "-1:-1:Channel need to be only alpha !:\r\n");
+			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Channel need to be only alpha !:\r\n");
 	else
 	{
 		if ((num_chat = ircs_chanexist(ircs, tab[1])) == -1)
 			num_chat = ircs_chancreate(ircs, tab[1]);
 		if (num_chat == -1)
-			c_buf_write(&(fd->c_buf_send), "-1:-1:Can't create this channel because full !:\r\n");
+			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Can't create this channel because full !:\r\n");
 		else
 		{
 			fd->chan = num_chat;
-			c_buf_write(&(fd->c_buf_send), "-1:-1:Channel ");
+			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Channel ");
 			c_buf_write(&(fd->c_buf_send), tab[1]);
 			c_buf_write(&(fd->c_buf_send), " join !:\r\n");
 		}
@@ -126,11 +126,11 @@ static void	ircs_cmd_leave(t_ircs *ircs, int s)
 
 	fd = &(ircs->fds[s]);
 	if (fd->chan == -1)
-		c_buf_write(&(fd->c_buf_send), "-1:-1:You're not in a channel...:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You're not in a channel...:\r\n");
 	else
 	{
 		fd->chan = -1;
-		c_buf_write(&(fd->c_buf_send), "-1:-1:Channel leave !:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Channel leave !:\r\n");
 	}
 }
 
@@ -141,9 +141,9 @@ static void	ircs_cmd_msg(t_ircs *ircs, char *buff, int s)
 
 	fd = &(ircs->fds[s]);
 	if (!ircs_havenick(fd))
-		c_buf_write(&(fd->c_buf_send), "-1:-1:You need to set a nick before !:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You need to set a nick before !:\r\n");
 	else if (fd->chan == -1)
-		c_buf_write(&(fd->c_buf_send), "-1:-1:You need choose a channel before !:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You need choose a channel before !:\r\n");
 	else
 	{
 		i = 0;
@@ -151,6 +151,8 @@ static void	ircs_cmd_msg(t_ircs *ircs, char *buff, int s)
 		{
 			if (ircs->fds[i].type == FD_CLIENT && ircs->fds[i].chan == fd->chan)
 			{
+				c_buf_write(&(ircs->fds[i].c_buf_send), CMD_MSG_S);
+				c_buf_write(&(ircs->fds[i].c_buf_send), ":");
 				c_buf_write(&(ircs->fds[i].c_buf_send), fd->nick);
 				c_buf_write(&(ircs->fds[i].c_buf_send), ":");
 				c_buf_write(&(ircs->fds[i].c_buf_send), ircs->chan[fd->chan]);
@@ -184,18 +186,20 @@ static void	ircs_cmd_mp(t_ircs *ircs, char **tab, char *buff, int s)
 
 	fd = &(ircs->fds[s]);
 	if (!ircs_havenick(fd))
-		c_buf_write(&(fd->c_buf_send), "-1:-1:You need to set a nick before !:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You need to set a nick before !:\r\n");
 	else if (fd->chan == -1)
-		c_buf_write(&(fd->c_buf_send), "-1:-1:You need choose a channel before !:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You need choose a channel before !:\r\n");
 	else if (tab[1] && !ft_strcmp(tab[1], fd->nick))
-		c_buf_write(&(fd->c_buf_send), "-1:-1:You can't talk to you !:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You can't talk to you !:\r\n");
 	else if (tab[1])
 	{
 		if ((user = ircs_find_nick(ircs, tab[1])) == -1 || (ircs->fds[user].chan != fd->chan))
-			c_buf_write(&(fd->c_buf_send), "-1:-1:Can't find this user !:\r\n");
+			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Can't find this user !:\r\n");
 		else
 		{
 			buff[ft_strlen(buff) - 1] = 0;
+			c_buf_write(&(ircs->fds[user].c_buf_send), CMD_MP_S);
+			c_buf_write(&(ircs->fds[user].c_buf_send), ":");
 			c_buf_write(&(ircs->fds[user].c_buf_send), fd->nick);
 			c_buf_write(&(ircs->fds[user].c_buf_send), ":");
 			c_buf_write(&(ircs->fds[user].c_buf_send), "MP");
@@ -203,6 +207,8 @@ static void	ircs_cmd_mp(t_ircs *ircs, char **tab, char *buff, int s)
 			c_buf_write(&(ircs->fds[user].c_buf_send), buff + ft_strlen(tab[0]) + ft_strlen(tab[1]) + 2);
 			c_buf_write(&(ircs->fds[user].c_buf_send), ":");
 			c_buf_write(&(ircs->fds[user].c_buf_send), "\r\n");
+			c_buf_write(&(fd->c_buf_send), CMD_MP_S);
+			c_buf_write(&(fd->c_buf_send), ":");
 			c_buf_write(&(fd->c_buf_send), ircs->fds[user].nick);
 			c_buf_write(&(fd->c_buf_send), ":");
 			c_buf_write(&(fd->c_buf_send), "MP to");
@@ -221,12 +227,12 @@ static void	ircs_cmd_who(t_ircs *ircs, int s)
 
 	fd = &(ircs->fds[s]);
 	if (!ircs_havenick(fd))
-		c_buf_write(&(fd->c_buf_send), "-1:-1:You need to set a nick before !:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You need to set a nick before !:\r\n");
 	else if (fd->chan == -1)
-		c_buf_write(&(fd->c_buf_send), "-1:-1:You need choose a channel before !:\r\n");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You need choose a channel before !:\r\n");
 	else
 	{
-		c_buf_write(&(fd->c_buf_send), "-1:-1:Users actually connected on ");
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Users actually connected on ");
 		c_buf_write(&(fd->c_buf_send), ircs->chan[fd->chan]);
 		c_buf_write(&(fd->c_buf_send), ": ");
 		i = 0;

@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/08 13:08:23 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/13 11:43:56 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/19 16:49:36 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,20 @@ static void	ircc_print_recv(char *buff)
 
 	if (!(tab = ft_strsplit(buff, ':')))
 		ft_perror_exit("ft_strsplit");
-	if (tab[0] && tab[1])
+	if (tab[0] && tab[1] && tab[2])
 	{
-		if (ft_atoi(tab[0]) == -1 && ft_atoi(tab[1]) == -1)
-			ft_printf("[SERVER] %s\n", buff + 6);
+		if (ft_atoi(tab[0]) == -1 && ft_atoi(tab[1]) == -1 && ft_atoi(tab[2]) == -1)
+			ft_printf("\33[34m[SERVER] %s\n", buff + ft_strlen(tab[0]) + ft_strlen(tab[1]) + ft_strlen(tab[2]) + 3);
 		else
-			ft_printf("%s-[%s]: %s\n", tab[1], tab[0], buff + ft_strlen(tab[0]) + ft_strlen(tab[1]) + 2);
+		{
+			if (ft_atoi(tab[0]) == ft_atoi(CMD_MP))
+				ft_printf("\33[35m");
+			ft_printf("%s [%s]: %s\n", tab[2], tab[1], buff + ft_strlen(tab[0]) + ft_strlen(tab[1]) + ft_strlen(tab[2]) + 3);
+		}
+		ft_printf("\33[39m");
 	}
 	else
-		ft_printf("WTF\n");
+		ft_printf("WRONG PACKET : %s\n", buff);
 }
 
 static void	ircc_read(t_ircc *ircc)
