@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 16:12:13 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/19 18:20:25 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/22 17:05:37 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ static void	ircs_cmd_msg(t_ircs *ircs, char *buff, int s)
 				c_buf_write(&(ircs->fds[i].c_buf_send), ircs->chan[fd->chan]);
 				c_buf_write(&(ircs->fds[i].c_buf_send), ":");
 				c_buf_write(&(ircs->fds[i].c_buf_send), buff + 2);
-				c_buf_write(&(ircs->fds[i].c_buf_send), "\r\n");
+				c_buf_write(&(ircs->fds[i].c_buf_send), ":\r\n");
 			}
 			i++;
 		}
@@ -214,26 +214,18 @@ static void	ircs_cmd_mp(t_ircs *ircs, char **tab, char *buff, int s)
 			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Can't find this user !:\r\n");
 		else
 		{
-			if (buff[ft_strlen(buff) - 1] == ':')
-				buff[ft_strlen(buff) - 1] = 0;
 			c_buf_write(&(ircs->fds[user].c_buf_send), CMD_MP_S);
 			c_buf_write(&(ircs->fds[user].c_buf_send), ":");
 			c_buf_write(&(ircs->fds[user].c_buf_send), fd->nick);
-			c_buf_write(&(ircs->fds[user].c_buf_send), ":");
-			c_buf_write(&(ircs->fds[user].c_buf_send), "MP");
-			c_buf_write(&(ircs->fds[user].c_buf_send), ":");
+			c_buf_write(&(ircs->fds[user].c_buf_send), ":MP:");
 			c_buf_write(&(ircs->fds[user].c_buf_send), buff + ft_strlen(tab[0]) + ft_strlen(tab[1]) + 2);
-			c_buf_write(&(ircs->fds[user].c_buf_send), ":");
-			c_buf_write(&(ircs->fds[user].c_buf_send), "\r\n");
+			c_buf_write(&(ircs->fds[user].c_buf_send), ":\r\n");
 			c_buf_write(&(fd->c_buf_send), CMD_MP_S);
 			c_buf_write(&(fd->c_buf_send), ":");
 			c_buf_write(&(fd->c_buf_send), ircs->fds[user].nick);
-			c_buf_write(&(fd->c_buf_send), ":");
-			c_buf_write(&(fd->c_buf_send), "MP to");
-			c_buf_write(&(fd->c_buf_send), ":");
+			c_buf_write(&(fd->c_buf_send), ":MP to:");
 			c_buf_write(&(fd->c_buf_send), buff + ft_strlen(tab[0]) + ft_strlen(tab[1]) + 2);
-			c_buf_write(&(fd->c_buf_send), ":");
-			c_buf_write(&(fd->c_buf_send), "\r\n");
+			c_buf_write(&(fd->c_buf_send), ":\r\n");
 		}
 	}
 }
@@ -252,14 +244,14 @@ static void	ircs_cmd_who(t_ircs *ircs, int s)
 	{
 		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Users actually connected on ");
 		c_buf_write(&(fd->c_buf_send), ircs->chan[fd->chan]);
-		c_buf_write(&(fd->c_buf_send), ": ");
+		c_buf_write(&(fd->c_buf_send), ":");
 		i = 0;
 		while (i < ircs->maxfd)
 		{
 			if (ircs->fds[i].type == FD_CLIENT && ircs->fds[i].chan == fd->chan)
 			{
-				c_buf_write(&(fd->c_buf_send), ircs->fds[i].nick);
 				c_buf_write(&(fd->c_buf_send), " ");
+				c_buf_write(&(fd->c_buf_send), ircs->fds[i].nick);
 			}
 			i++;
 		}

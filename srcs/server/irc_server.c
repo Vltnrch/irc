@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:27:46 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/19 16:22:58 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/22 17:01:14 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ static void ircs_prep_cmd(t_ircs *ircs, int s)
 		if (!c_buf_complete_cmd(&(ircs->fds[s].c_buf_recv)))
 			return ;
 		c_buf_read_cmd(&(ircs->fds[s].c_buf_recv), buff);
+		if (buff[ft_strlen(buff) - 1] == ':')
+			buff[ft_strlen(buff) - 1] = 0;
 		if (!(tab = ft_strsplit(buff, ':')))
 			ft_perror_exit("ft_strsplit");
 		if (tab[0] && *tab[0])

@@ -6,12 +6,14 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/05 15:34:16 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/08 15:20:24 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/22 16:38:54 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CIRCULAR_BUFFER_H
 #define CIRCULAR_BUFFER_H
+
+# include "libft.h"
 
 # define BUF_SIZE_CBUF	4096
 

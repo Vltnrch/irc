@@ -6,11 +6,11 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/05 15:19:10 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/08 15:39:02 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/22 17:07:43 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "irc_server.h"
+#include "circular_buffer.h"
 
 void	c_buf_init(t_c_buf *c_buf)
 {

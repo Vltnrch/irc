@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/08 13:30:07 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/13 11:53:15 by vroche           ###   ########.fr       */
+/*   Updated: 2016/12/22 16:59:24 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,64 +15,57 @@
 static void	ircc_cmd_nick(t_ircc *ircc, char **tab)
 {
 	c_buf_write(&(ircc->c_buf_send), CMD_NICK);
-	c_buf_write(&(ircc->c_buf_send), ":");
 	if (tab[1])
 	{
-		c_buf_write(&(ircc->c_buf_send), tab[1]);
 		c_buf_write(&(ircc->c_buf_send), ":");
+		c_buf_write(&(ircc->c_buf_send), tab[1]);
 	}
-	c_buf_write(&(ircc->c_buf_send), "\r\n");
+	c_buf_write(&(ircc->c_buf_send), ":\r\n");
 }
 
 static void	ircc_cmd_join(t_ircc *ircc, char **tab)
 {
 	c_buf_write(&(ircc->c_buf_send), CMD_JOIN);
-	c_buf_write(&(ircc->c_buf_send), ":");
-	if (tab[1] && *tab[1] == '#')
-		c_buf_write(&(ircc->c_buf_send), tab[1]);
-	else if (tab[1])
+	if (tab[1])
 	{
-		c_buf_write(&(ircc->c_buf_send), "#");
+		c_buf_write(&(ircc->c_buf_send), ":");
+		if (*tab[1] != '#')
+			c_buf_write(&(ircc->c_buf_send), "#");
 		c_buf_write(&(ircc->c_buf_send), tab[1]);
 	}
-	c_buf_write(&(ircc->c_buf_send), ":");
-	c_buf_write(&(ircc->c_buf_send), "\r\n");
+	c_buf_write(&(ircc->c_buf_send), ":\r\n");
 }
 
 static void	ircc_cmd_leave(t_ircc *ircc, char **tab)
 {
 	c_buf_write(&(ircc->c_buf_send), CMD_LEAVE);
-	c_buf_write(&(ircc->c_buf_send), ":");
-	if (tab[1] && *tab[1] == '#')
-		c_buf_write(&(ircc->c_buf_send), tab[1]);
-	else if (tab[1])
+	if (tab[1])
 	{
-		c_buf_write(&(ircc->c_buf_send), "#");
+		c_buf_write(&(ircc->c_buf_send), ":");
+		if (*tab[1] != '#')
+			c_buf_write(&(ircc->c_buf_send), "#");
 		c_buf_write(&(ircc->c_buf_send), tab[1]);
 	}
-	c_buf_write(&(ircc->c_buf_send), ":");
-	c_buf_write(&(ircc->c_buf_send), "\r\n");
+	c_buf_write(&(ircc->c_buf_send), ":\r\n");
 }
 
 static void	ircc_cmd_who(t_ircc *ircc)
 {
 	c_buf_write(&(ircc->c_buf_send), CMD_WHO);
-	c_buf_write(&(ircc->c_buf_send), ":");
-	c_buf_write(&(ircc->c_buf_send), "\r\n");
+	c_buf_write(&(ircc->c_buf_send), ":\r\n");
 }
 
 static void	ircc_cmd_mp(t_ircc *ircc, char **tab, char *line)
 {
 	c_buf_write(&(ircc->c_buf_send), CMD_MP);
-	c_buf_write(&(ircc->c_buf_send), ":");
-	if (tab[1])
+	if (tab[2])
 	{
+		c_buf_write(&(ircc->c_buf_send), ":");
 		c_buf_write(&(ircc->c_buf_send), tab[1]);
 		c_buf_write(&(ircc->c_buf_send), ":");
 		c_buf_write(&(ircc->c_buf_send), line + ft_strlen(tab[0]) + ft_strlen(tab[1]) + 2);
-		c_buf_write(&(ircc->c_buf_send), ":");
 	}
-	c_buf_write(&(ircc->c_buf_send), "\r\n");
+	c_buf_write(&(ircc->c_buf_send), ":\r\n");
 }
 
 static void	ircc_cmd_msg(t_ircc *ircc, char *line)
@@ -80,8 +73,7 @@ static void	ircc_cmd_msg(t_ircc *ircc, char *line)
 	c_buf_write(&(ircc->c_buf_send), CMD_MSG);
 	c_buf_write(&(ircc->c_buf_send), ":");
 	c_buf_write(&(ircc->c_buf_send), line);
-	c_buf_write(&(ircc->c_buf_send), ":");
-	c_buf_write(&(ircc->c_buf_send), "\r\n");
+	c_buf_write(&(ircc->c_buf_send), ":\r\n");
 }
 
 void	ircc_cmd(t_ircc *ircc, char **tab, char *line)
