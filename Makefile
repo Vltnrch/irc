@@ -6,7 +6,7 @@
 #    By: vroche <vroche@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/03/16 10:49:38 by vroche            #+#    #+#              #
-#    Updated: 2016/12/08 17:04:01 by vroche           ###   ########.fr        #
+#    Updated: 2017/01/23 15:44:24 by vroche           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,7 @@ C_SERVER =	srcs/server/irc_server.c \
 O_SERVER = $(C_SERVER:.c=.o)
 
 C_COMMON =	srcs/common/circular_buffer.c \
+			srcs/common/circular_buffer_manage.c \
 			srcs/common/manage.c \
 			srcs/common/ft_spacesplit.c
 

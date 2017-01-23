@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:27:46 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/19 18:20:15 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/23 19:31:38 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,23 +42,33 @@ static void	ircc_sendtosock(char *line)
 		if (*line)
 		{
 			ircc = get_ircc_struct();
-			if (!strcmp(line, "exit"))
+			if (!strcmp(line, "/quit"))
 			{
 				rl_callback_handler_remove();
 				printf("Bye !\n");
 				exit(0);
 			}
+			ft_printf("\33[1A\33[2K");
 			ircc_prep_cmd(ircc, line);
 			*rl_line_buffer = 0;
 			add_history(line);
 		}
-		ft_printf("\33[1A\33[2K");
+		else
+			ft_printf("\33[1A\33[2K");
 	}
 	else
 		ft_printf("\33[2K\r");
 }
 
-static void	ircc_init_socket(t_ircc *ircc)
+static void	ircc_init(t_ircc *ircc)
+{
+	ircc->is_connected = 0;
+	ircc->max = 1;
+	c_buf_init(&(ircc->c_buf_recv));
+	c_buf_init(&(ircc->c_buf_send));
+}
+
+void	ircc_init_socket(t_ircc *ircc)
 {
 	struct sockaddr_in	sa_in;
 	struct protoent		*pe;
@@ -74,17 +84,13 @@ static void	ircc_init_socket(t_ircc *ircc)
 	sa_in.sin_port = htons(ircc->port);
 	sa_in.sin_family = AF_INET;
 	if(connect(ircc->socket, (struct sockaddr *)&sa_in, sizeof(struct sockaddr)) == -1)
-	    ft_perror_exit("connect");
+		ft_perror_exit("connect");
 	ircc->max = ircc->socket + 1;
-	c_buf_init(&(ircc->c_buf_recv));
-	c_buf_init(&(ircc->c_buf_send));
+	ircc->is_connected = 1;
+	printf("IRC Client launch on ip : %s port : %d\n", ircc->ip, ircc->port);
 }
 
-static int	ircc_bin_tab(int a, int b)
-{
-	a = b;
-	return (1);
-}
+char *g_cmd_names[] = {"/nick", "/join", "/leave", "/msg", "/who", NULL};
 
 static void	ircc_core(t_ircc *ircc)
 {
@@ -107,23 +113,50 @@ static void	ircc_core(t_ircc *ircc)
 	}
 }
 
+char *cmd_name_generator(const char *text, int state)
+{
+	static int list_index;
+	static int len;
+	char *name;
+
+	if (!state) {
+		list_index = 0;
+		len = ft_strlen(text);
+	}
+	while ((name = g_cmd_names[list_index++]))
+	{
+		if (!ft_strncmp(name, text, len))
+			return ft_strdup(name);
+	}
+	return (NULL);
+}
+
+char **cmd_name_completion(const char *text, int start, int end)
+{
+	rl_attempted_completion_over = 1;
+	start = end;
+	return rl_completion_matches(text, cmd_name_generator);
+}
+
 int			main(int ac, char **av)
 {
 	t_ircc			*ircc;
 
-	if (ac != 3)
+	ircc = get_ircc_struct();
+	ircc->ip = "";
+	ircc->port = 4242;
+	ircc_init(ircc);
+	if (ac > 2)
 	{
-		printf("usage: %s <ip> <port>\n", av[0]);
+		ircc->ip = av[1];
+		if (av[2])
+			ircc->port = ft_atoi(av[2]);
+		ircc_init_socket(ircc);
 		return (EXIT_FAILURE);
 	}
-	ircc = get_ircc_struct();
-	ircc->ip = av[1];
-  	ircc->port = ft_atoi(av[2]);
-	ircc_init_socket(ircc);
-	printf("IRC Client launch on ip : %s port : %d\n", ircc->ip, ircc->port);
 	rl_callback_handler_install("$IRC>> ", &ircc_sendtosock);
 	using_history();
-	rl_bind_key('\t', &ircc_bin_tab);
+	rl_attempted_completion_function = cmd_name_completion;
 	while (42)
 	{
 		ircc_init_fd(ircc);

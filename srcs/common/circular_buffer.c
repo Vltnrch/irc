@@ -6,27 +6,20 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/05 15:19:10 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/22 17:07:43 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/23 15:43:52 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "circular_buffer.h"
 
-void	c_buf_init(t_c_buf *c_buf)
-{
-	c_buf->read = c_buf->buf;
-	c_buf->write = c_buf->buf;
-}
-
 void	c_buf_read_cmd(t_c_buf *c_buf, char *dest)
 {
-	int	i;
 	char *tmp;
 
 	tmp = c_buf->read;
 	while (tmp != c_buf->write)
 	{
-		if (*tmp == '\r' && (tmp + 1) != c_buf->write && *(tmp + 1) == '\n')
+		if (*tmp == '\n')
 			break ;
 		tmp++;
 		if (tmp == c_buf->buf + BUF_SIZE_CBUF)
@@ -38,14 +31,9 @@ void	c_buf_read_cmd(t_c_buf *c_buf, char *dest)
 		if (c_buf->read == c_buf->buf + BUF_SIZE_CBUF)
 			c_buf->read = c_buf->buf;
 	}
-	i = 0;
-	while (i < 2)
-	{
-		c_buf->read++;
-		if (c_buf->read == c_buf->buf + BUF_SIZE_CBUF)
-			c_buf->read = c_buf->buf;
-		i++;
-	}
+	c_buf->read++;
+	if (c_buf->read == c_buf->buf + BUF_SIZE_CBUF)
+		c_buf->read = c_buf->buf;
 	*dest = 0;
 }
 
@@ -68,28 +56,4 @@ void	c_buf_write(t_c_buf *c_buf, char *src)
 		if (c_buf->write == c_buf->buf + BUF_SIZE_CBUF)
 			c_buf->write = c_buf->buf;
 	}
-}
-
-size_t	c_buf_len(t_c_buf *c_buf)
-{
-	if (c_buf->write >= c_buf->read)
-		return ((size_t)(c_buf->write - c_buf->read));
-	else
-		return ((size_t)(BUF_SIZE_CBUF + c_buf->write - c_buf->read));
-}
-
-int		c_buf_complete_cmd(t_c_buf *c_buf)
-{
-	char *tmp;
-
-	tmp = c_buf->read;
-	while (tmp != c_buf->write)
-	{
-		if (*tmp == '\r' && (tmp + 1) != c_buf->write && *(tmp + 1) == '\n')
-			return (1);
-		tmp++;
-		if (tmp == c_buf->buf + BUF_SIZE_CBUF)
-			tmp = c_buf->buf;
-	}
-	return (0);
 }

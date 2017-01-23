@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/19 18:13:49 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/23 19:15:55 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct	s_ircc
 	int			max;
 	int			socket;
 	char		*ip;
+	int			is_connected;
 	fd_set		fd_read;
 	fd_set		fd_write;
 	t_c_buf		c_buf_recv;
@@ -57,5 +58,7 @@ void			ircc_init_fd(t_ircc *ircc);
 void			ircc_cmd(t_ircc *ircc, char **tab, char *line);
 
 void			ircc_print_recv(char **tab, char *buff);
+
+void			ircc_init_socket(t_ircc *ircc);
 
 #endif
