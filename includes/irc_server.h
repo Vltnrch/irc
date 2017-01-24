@@ -6,12 +6,12 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/23 16:50:42 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/24 19:21:04 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef IRC_SERVER_H
-#define IRC_SERVER_H
+# define IRC_SERVER_H
 
 # include <sys/resource.h>
 # include <sys/select.h>
@@ -29,7 +29,7 @@
 # define FD_SERV		1
 # define FD_CLIENT		2
 
-# define BACKLOG_IRCS	42
+# define BACKLOG_IRCS	1
 
 # define CMD_SERV		"-1"
 # define CMD_MSG		"0"
@@ -62,15 +62,31 @@ typedef struct	s_ircs
 	int			maxfd;
 	int			max;
 	int			r;
+	int			s;
 	fd_set		fd_read;
 	fd_set		fd_write;
 }				t_ircs;
 
-void			ircs_init_fd(t_ircs *ircs);
-void			ircs_check_fd(t_ircs *ircs);
-
 void			ircs_cmd(t_ircs *ircs, char **tab, char *buff, int s);
 
-void			ft_perror_exit(const char *str);
+void			ircs_cmd_leave(t_ircs *ircs, int s);
+void			ircs_cmd_join(t_ircs *ircs, char **tab, int s);
+
+int				ircs_chancreate(t_ircs *ircs, char *chan);
+int				ircs_chanexist(t_ircs *ircs, char *chan);
+int				ircs_nickexist(t_ircs *ircs, char *nick);
+int				ircs_havenick(t_fd *fd);
+
+void			ircs_cmd_msg(t_ircs *ircs, char *buff, int s);
+void			ircs_cmd_mp(t_ircs *ircs, char **tab, char *buff, int s);
+
+void			ircs_cmd_nick(t_ircs *ircs, char **tab, int s);
+void			ircs_cmd_who(t_ircs *ircs, int s);
+
+t_ircs			*get_ircs_struct(void);
+void			ircs_init_signal(void);
+
+void			ircs_init_fd(t_ircs *ircs);
+void			ircs_check_fd(t_ircs *ircs);
 
 #endif

@@ -6,101 +6,55 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/08 13:30:07 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/23 19:21:36 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/24 17:57:04 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc_client.h"
 
-static void	ircc_cmd_nick(t_ircc *ircc, char **tab)
+int			ircc_isconnected(t_ircc *ircc)
 {
-	c_buf_write(&(ircc->c_buf_send), CMD_NICK);
-	if (tab[1])
+	if (!ircc->is_connected)
 	{
-		c_buf_write(&(ircc->c_buf_send), ":");
-		c_buf_write(&(ircc->c_buf_send), tab[1]);
+		ft_printf("You need to be connected\n");
+		return (0);
 	}
-	c_buf_write(&(ircc->c_buf_send), ":\n");
+	return (1);
 }
 
-static void	ircc_cmd_join(t_ircc *ircc, char **tab)
+static void	ircc_cmd_treat(t_ircc *ircc, char **tab, char *line)
 {
-	c_buf_write(&(ircc->c_buf_send), CMD_JOIN);
-	if (tab[1])
-	{
-		c_buf_write(&(ircc->c_buf_send), ":");
-		if (*tab[1] != '#')
-			c_buf_write(&(ircc->c_buf_send), "#");
-		c_buf_write(&(ircc->c_buf_send), tab[1]);
-	}
-	c_buf_write(&(ircc->c_buf_send), ":\n");
-}
-
-static void	ircc_cmd_leave(t_ircc *ircc, char **tab)
-{
-	c_buf_write(&(ircc->c_buf_send), CMD_LEAVE);
-	if (tab[1])
-	{
-		c_buf_write(&(ircc->c_buf_send), ":");
-		if (*tab[1] != '#')
-			c_buf_write(&(ircc->c_buf_send), "#");
-		c_buf_write(&(ircc->c_buf_send), tab[1]);
-	}
-	c_buf_write(&(ircc->c_buf_send), ":\n");
-}
-
-static void	ircc_cmd_who(t_ircc *ircc)
-{
-	c_buf_write(&(ircc->c_buf_send), CMD_WHO);
-	c_buf_write(&(ircc->c_buf_send), ":\n");
-}
-
-static void	ircc_cmd_mp(t_ircc *ircc, char **tab, char *line)
-{
-	c_buf_write(&(ircc->c_buf_send), CMD_MP);
-	if (tab[2])
-	{
-		c_buf_write(&(ircc->c_buf_send), ":");
-		c_buf_write(&(ircc->c_buf_send), tab[1]);
-		c_buf_write(&(ircc->c_buf_send), ":");
-		c_buf_write(&(ircc->c_buf_send), line + ft_strlen(tab[0]) + ft_strlen(tab[1]) + 2);
-	}
-	c_buf_write(&(ircc->c_buf_send), ":\n");
-}
-
-static void	ircc_cmd_msg(t_ircc *ircc, char *line)
-{
-	c_buf_write(&(ircc->c_buf_send), CMD_MSG);
-	c_buf_write(&(ircc->c_buf_send), ":");
-	c_buf_write(&(ircc->c_buf_send), line);
-	c_buf_write(&(ircc->c_buf_send), ":\n");
-}
-
-void	ircc_cmd(t_ircc *ircc, char **tab, char *line)
-{
-	if (ircc->is_connected)
-	{
-		if (!ft_strcmp(tab[0], "/nick"))
-			ircc_cmd_nick(ircc, tab);
-		else if (!ft_strcmp(tab[0], "/join"))
-			ircc_cmd_join(ircc, tab);
-		else if (!ft_strcmp(tab[0], "/leave"))
-			ircc_cmd_leave(ircc, tab);
-		else if (!ft_strcmp(tab[0], "/msg"))
-			ircc_cmd_mp(ircc, tab, line);
-		else if (!ft_strcmp(tab[0], "/who"))
-			ircc_cmd_who(ircc);
-		else if (*tab[0] != '/')
-			ircc_cmd_msg(ircc, line);
-	}
+	if (!ft_strcmp(tab[0], "/help"))
+		ircc_cmd_help();
+	else if (!ft_strcmp(tab[0], "/nick"))
+		ircc_cmd_nick(ircc, tab);
+	else if (!ft_strcmp(tab[0], "/join"))
+		ircc_cmd_join(ircc, tab);
+	else if (!ft_strcmp(tab[0], "/leave"))
+		ircc_cmd_leave(ircc, tab);
+	else if (!ft_strcmp(tab[0], "/msg"))
+		ircc_cmd_mp(ircc, tab, line);
+	else if (!ft_strcmp(tab[0], "/who"))
+		ircc_cmd_who(ircc);
+	else if (!ft_strcmp(tab[0], "/disconnect"))
+		ircc_cmd_disconnect(ircc);
 	else if (!ft_strcmp(tab[0], "/connect"))
-	{
-		if (tab[1])
-		{
-			ircc->ip = ft_strdup(tab[1]);
-			if (tab[2])
-				ircc->port = ft_atoi(tab[2]);
-			ircc_init_socket(ircc);
-		}
-	}
+		ircc_cmd_connect(ircc, tab);
+	else if (!ft_strcmp(tab[0], "/quit"))
+		ircc_cmd_quit(ircc);
+	else if (*tab[0] != '/')
+		ircc_cmd_msg(ircc, line);
+	else
+		ft_printf("Command not found\n");
+}
+
+void		ircc_cmd(t_ircc *ircc, char *line)
+{
+	char	**tab;
+
+	if (!(tab = ft_spacesplit(line)))
+		ft_perror_exit("ft_spacesplit");
+	if (tab[0])
+		ircc_cmd_treat(ircc, tab, line);
+	ft_freetab(tab);
 }

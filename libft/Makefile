@@ -6,7 +6,7 @@
 #    By: vroche <vroche@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/06 17:32:05 by vroche            #+#    #+#              #
-#    Updated: 2016/11/01 12:33:42 by vroche           ###   ########.fr        #
+#    Updated: 2017/01/24 12:33:01 by vroche           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -95,6 +95,7 @@ CFPF = ft_printf/ft_ft.c \
 	ft_printf/ft_perch.c \
 	ft_printf/ft_percopt.c \
 	ft_printf/ft_printf.c \
+	ft_printf/ft_sprintf.c \
 	ft_printf/ft_put_di.c \
 	ft_printf/ft_put_ou.c \
 	ft_printf/ft_put_p.c \

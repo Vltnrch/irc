@@ -6,7 +6,7 @@
 #    By: vroche <vroche@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/03/16 10:49:38 by vroche            #+#    #+#              #
-#    Updated: 2017/01/23 15:44:24 by vroche           ###   ########.fr        #
+#    Updated: 2017/01/24 18:22:40 by vroche           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,21 +23,32 @@ HDR = -I./libft/includes -I./includes -I/Users/vroche/.brew/opt/readline/include
 FLAGS = -Wall -Wextra -Werror -g
 
 C_CLIENT =	srcs/client/irc_client.c \
-			srcs/client/ircc_select.c \
-			srcs/client/ircc_cmd.c 
+			srcs/client/ircc_cmd.c \
+			srcs/client/ircc_cmd_channel.c \
+			srcs/client/ircc_cmd_connection.c \
+			srcs/client/ircc_cmd_msg.c \
+			srcs/client/ircc_cmd_other.c \
+			srcs/client/ircc_manage.c \
+			srcs/client/ircc_readline.c \
+			srcs/client/ircc_select.c
 
 O_CLIENT = $(C_CLIENT:.c=.o)
 
 C_SERVER =	srcs/server/irc_server.c \
-			srcs/server/ircs_select.c \
-			srcs/server/ircs_cmd.c 
+			srcs/server/ircs_cmd.c \
+			srcs/server/ircs_cmd_channel.c \
+			srcs/server/ircs_cmd_manage.c \
+			srcs/server/ircs_cmd_msg.c \
+			srcs/server/ircs_cmd_other.c \
+			srcs/server/ircs_manage.c \
+			srcs/server/ircs_select.c 
 
 O_SERVER = $(C_SERVER:.c=.o)
 
 C_COMMON =	srcs/common/circular_buffer.c \
 			srcs/common/circular_buffer_manage.c \
-			srcs/common/manage.c \
-			srcs/common/ft_spacesplit.c
+			srcs/common/ft_spacesplit.c \
+			srcs/common/manage.c
 
 O_COMMON = $(C_COMMON:.c=.o)
 

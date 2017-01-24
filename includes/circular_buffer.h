@@ -6,12 +6,12 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/05 15:34:16 by vroche            #+#    #+#             */
-/*   Updated: 2016/12/22 16:38:54 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/24 19:20:56 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CIRCULAR_BUFFER_H
-#define CIRCULAR_BUFFER_H
+# define CIRCULAR_BUFFER_H
 
 # include "libft.h"
 
@@ -24,10 +24,12 @@ typedef struct	s_c_buf
 	char		*write;
 }				t_c_buf;
 
-void			c_buf_init(t_c_buf *c_buf);
 void			c_buf_read_cmd(t_c_buf *c_buf, char *dest);
 void			c_buf_read(t_c_buf *c_buf, char *src);
 void			c_buf_write(t_c_buf *c_buf, char *dest);
+
+void			c_buf_init(t_c_buf *c_buf);
 size_t			c_buf_len(t_c_buf *c_buf);
 int				c_buf_complete_cmd(t_c_buf *c_buf);
+
 #endif

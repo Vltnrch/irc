@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:27:46 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/23 15:45:32 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/24 19:21:58 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,30 +23,30 @@ static void	ircs_init_struct(t_ircs *ircs, char **av)
 		ft_perror_exit("malloc fds");
 	ft_bzero(ircs->fds, sizeof(t_fd) * ircs->maxfd);
 	ft_bzero(ircs->chan, sizeof(char *) * MAXCHAN);
-  	ircs->port = ft_atoi(av[1]);
+	ircs->port = ft_atoi(av[1]);
 }
 
 static void	ircs_init_socket(t_ircs *ircs)
 {
-  	int					s;
 	struct sockaddr_in	sa_in;
 	struct protoent		*pe;
-	
+
 	if (!(pe = getprotobyname("tcp")))
 		ft_perror_exit("getprotobyname");
-	if ((s = socket(PF_INET, SOCK_STREAM, pe->p_proto)) < 0)
+	if ((ircs->s = socket(PF_INET, SOCK_STREAM, pe->p_proto)) < 0)
 		ft_perror_exit("socket");
 	sa_in.sin_family = AF_INET;
 	sa_in.sin_addr.s_addr = INADDR_ANY;
 	sa_in.sin_port = htons(ircs->port);
-	if (bind(s, (struct sockaddr *)&sa_in, sizeof(struct sockaddr_in)) == -1)
+	if (bind(ircs->s, (struct sockaddr *)&sa_in, \
+				sizeof(struct sockaddr_in)) == -1)
 		ft_perror_exit("bind");
-	if (listen(s, BACKLOG_IRCS) == -1)
+	if (listen(ircs->s, BACKLOG_IRCS) == -1)
 		ft_perror_exit("listen");
-	ircs->fds[s].type = FD_SERV;
+	ircs->fds[ircs->s].type = FD_SERV;
 }
 
-static void ircs_prep_cmd(t_ircs *ircs, int s)
+static void	ircs_prep_cmd(t_ircs *ircs, int s)
 {
 	char	**tab;
 	char	buff[BUF_SIZE_CBUF + 1];
@@ -81,23 +81,27 @@ static void	ircs_core(t_ircs *ircs)
 
 int			main(int ac, char **av)
 {
-	t_ircs			ircs;
+	t_ircs			*ircs;
 
+	ircs = get_ircs_struct();
 	if (ac != 2)
 	{
 		ft_printf("usage: %s <port>\n", av[0]);
 		return (EXIT_FAILURE);
 	}
-	ircs_init_struct(&ircs, av);
-	ircs_init_socket(&ircs);
-	ft_printf("IRC Server launch on port : %d\nNumber on fd max : %d\n", ircs.port, ircs.maxfd);
+	ircs_init_struct(ircs, av);
+	ircs_init_socket(ircs);
+	ircs_init_signal();
+	ft_printf("IRC Server launch on port : %d\n", ircs->port);
+	ft_printf("Number on fd max : %d\n", ircs->maxfd);
 	while (42)
 	{
-		ircs_init_fd(&ircs);
-		if ((ircs.r = select(ircs.max + 1, &(ircs.fd_read), &(ircs.fd_write), NULL, NULL)) == -1)
+		ircs_init_fd(ircs);
+		if ((ircs->r = select(ircs->max + 1, &(ircs->fd_read), \
+							&(ircs->fd_write), NULL, NULL)) == -1)
 			ft_perror_exit("select");
-		ircs_check_fd(&ircs);
-		ircs_core(&ircs);
+		ircs_check_fd(ircs);
+		ircs_core(ircs);
 	}
 	return (EXIT_SUCCESS);
 }

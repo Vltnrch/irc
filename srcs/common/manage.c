@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 16:02:48 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/23 15:44:48 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/24 13:17:19 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,13 @@
 
 void	ft_perror_exit(const char *str)
 {
-	ft_printf("%s: %s\n", str, strerror(errno));
+	ft_perror(str);
 	exit(EXIT_FAILURE);
+}
+
+void	ft_perror(const char *str)
+{
+	ft_printf("%s: %s\n", str, strerror(errno));
 }
 
 void	ft_freetab(char **tab)

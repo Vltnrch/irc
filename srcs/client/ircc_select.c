@@ -6,29 +6,11 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/08 13:08:23 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/23 19:20:05 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/24 16:57:28 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc_client.h"
-
-void		ircc_print_recv(char **tab, char *buff)
-{
-	if (tab[0] && tab[1] && tab[2])
-	{
-		if (ft_atoi(tab[0]) == -1 && ft_atoi(tab[1]) == -1 && ft_atoi(tab[2]) == -1)
-			ft_printf("\33[32m[SERVER] %s\n", buff + ft_strlen(tab[0]) + ft_strlen(tab[1]) + ft_strlen(tab[2]) + 3);
-		else
-		{
-			if (ft_atoi(tab[0]) == ft_atoi(CMD_MP))
-				ft_printf("\33[35m");
-			ft_printf("%s [%s]: %s\n", tab[2], tab[1], buff + ft_strlen(tab[0]) + ft_strlen(tab[1]) + ft_strlen(tab[2]) + 3);
-		}
-		ft_printf("\33[39m");
-	}
-	else
-		ft_printf("WRONG PACKET : %s\n", buff);
-}
 
 static void	ircc_read(t_ircc *ircc)
 {
@@ -39,9 +21,13 @@ static void	ircc_read(t_ircc *ircc)
 	if (r <= 0)
 	{
 		close(ircc->socket);
-		rl_callback_handler_remove();
-		printf("Server error, Bye !\n");
-		exit(0);
+		free(ircc->ip);
+		ircc->ip = ft_strdup("");
+		ircc->port = 4242;
+		ircc->is_connected = 0;
+		ft_printf("\33[2K\r");
+		ft_printf("You're disconnected from the server !\n");
+		rl_forced_update_display();
 	}
 	else
 	{
