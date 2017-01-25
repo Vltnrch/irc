@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 16:46:27 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 18:47:55 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/25 18:11:32 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,15 @@ void		ircc_readline(char *line)
 
 	if (line)
 	{
+		ft_printf("\33[1A\33[2K");
 		if (*line)
 		{
 			ircc = get_ircc_struct();
-			ft_printf("\33[1A\33[2K");
 			ircc_cmd(ircc, line);
 			*rl_line_buffer = 0;
 			add_history(line);
 		}
-		else
-			ft_printf("\33[1A\33[2K");
 	}
-	else
-		ft_printf("\33[2K\r");
 }
 
 static char	*ircc_cmd_generator(const char *text, int state)

@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 14:28:37 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 15:45:06 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/25 15:29:44 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,16 @@ void		ircs_init_signal(void)
 	signal(SIGQUIT, &ircs_handler);
 	signal(SIGTSTP, &ircs_handler);
 	signal(SIGTERM, &ircs_handler);
+}
+
+void		ircs_welcome_msg(t_fd *fd)
+{
+	c_buf_write(&(fd->c_buf_send), \
+				"-1:-1:-1://Welcome to vroche's IRC Server\\\\:\n");
+	c_buf_write(&(fd->c_buf_send), \
+				"-1:-1:-1:Choose a nick and a channel before talk:\n");
+	c_buf_write(&(fd->c_buf_send), \
+				"-1:-1:-1:Type /help to see all commands:\n");
+	c_buf_write(&(fd->c_buf_send), \
+				"-1:-1:-1:Have fun !:\n");
 }

@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/05 12:53:59 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 12:27:48 by vroche           ###   ########.fr       */
+/*   Updated: 2015/03/13 14:33:07 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ static int	ft_pfinit(t_pf **pf, const char *format, int fd)
 	(*pf)->rcnt = 0;
 	(*pf)->format = format;
 	(*pf)->fd = fd;
-	(*pf)->print = 1;
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 17:01:59 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 17:58:27 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/25 15:09:38 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ircc_cmd_help(void)
 {
 	ft_printf("/help			//Display this help\n");
 	ft_printf("/connect <ip> [port]	");
-	ft_printf("//Connect to server with an IP and port (default 4242)\n");
+	ft_printf("//Connect to server with an IP and port (default 6667)\n");
 	ft_printf("/disconnect		//Disconnect\n");
 	ft_printf("/nick <nickname>	//Choose a nickname\n");
 	ft_printf("/join <#chan>		//Join a channel\n");
@@ -24,7 +24,6 @@ void	ircc_cmd_help(void)
 	ft_printf("/who			//Show the user list on your channel\n");
 	ft_printf("/msg <nick> <message>	");
 	ft_printf("//Send a PM to a user from your channel, with a message\n");
-	ft_printf("/clear			//Clear the chat\n");
 	ft_printf("/quit			//Exit this program\n");
 }
 

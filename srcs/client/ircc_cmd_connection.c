@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 17:03:36 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 17:08:14 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/25 15:09:29 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ircc_cmd_disconnect(t_ircc *ircc)
 		return ;
 	free(ircc->ip);
 	ircc->ip = ft_strdup("");
-	ircc->port = 4242;
+	ircc->port = 6667;
 	ircc->is_connected = 0;
 	close(ircc->socket);
 	ft_printf("Disconnected\n");
@@ -35,7 +35,7 @@ void	ircc_cmd_connect(t_ircc *ircc, char **tab)
 		if (tab[2])
 			ircc->port = ft_atoi(tab[2]);
 		else
-			ircc->port = 4242;
+			ircc->port = 6667;
 		ircc_init_socket(ircc);
 	}
 	else

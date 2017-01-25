@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/08 13:08:23 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 16:57:28 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/25 18:11:01 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	ircc_read(t_ircc *ircc)
 		close(ircc->socket);
 		free(ircc->ip);
 		ircc->ip = ft_strdup("");
-		ircc->port = 4242;
+		ircc->port = 6667;
 		ircc->is_connected = 0;
 		ft_printf("\33[2K\r");
 		ft_printf("You're disconnected from the server !\n");

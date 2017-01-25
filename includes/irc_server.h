@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 19:21:04 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/25 15:28:32 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void			ircs_cmd_who(t_ircs *ircs, int s);
 
 t_ircs			*get_ircs_struct(void);
 void			ircs_init_signal(void);
+void			ircs_welcome_msg(t_fd *fd);
 
 void			ircs_init_fd(t_ircs *ircs);
 void			ircs_check_fd(t_ircs *ircs);

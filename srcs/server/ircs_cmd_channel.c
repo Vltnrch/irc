@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 18:19:22 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 19:45:25 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/25 16:55:56 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@ static void	ircs_cmd_leave_treat(t_ircs *ircs, t_fd *fd)
 {
 	int		chan;
 	int		i;
-	char	buff[BUFF_PF];
 
 	chan = fd->chan;
 	fd->chan = -1;
-	ft_sprintf(buff, "-1:-1:-1:Channel %s leave !:\n", ircs->chan[chan]);
-	c_buf_write(&(fd->c_buf_send), buff);
+	c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Channel ");
+	c_buf_write(&(fd->c_buf_send), ircs->chan[chan]);
+	c_buf_write(&(fd->c_buf_send), " leave !:\n");
 	i = 0;
 	while (i < ircs->maxfd)
 	{

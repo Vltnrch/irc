@@ -6,13 +6,13 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 18:20:57 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 19:36:36 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/25 17:01:19 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc_server.h"
 
-static void	ircs_cmd_nick_treat(t_ircs *ircs, char **tab, int s, char *buff)
+static void	ircs_cmd_nick_treat(t_ircs *ircs, char **tab, int s)
 {
 	t_fd	*fd;
 
@@ -31,30 +31,30 @@ static void	ircs_cmd_nick_treat(t_ircs *ircs, char **tab, int s, char *buff)
 	{
 		ft_strcpy(fd->nick, tab[1]);
 		ft_printf("//Client #%d set nick to : %s\n", s, fd->nick);
-		ft_sprintf(buff, "-1:-1:-1:Nick %s set:\n", fd->nick);
-		c_buf_write(&(fd->c_buf_send), buff);
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Nick ");
+		c_buf_write(&(fd->c_buf_send), fd->nick);
+		c_buf_write(&(fd->c_buf_send), " set:\n");
 	}
 }
 
 void		ircs_cmd_nick(t_ircs *ircs, char **tab, int s)
 {
 	t_fd	*fd;
-	char	buff[BUFF_PF];
 
 	fd = &(ircs->fds[s]);
 	if (ircs_havenick(fd))
 		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You already set a nick !:\n");
 	else
-		ircs_cmd_nick_treat(ircs, tab, s, buff);
+		ircs_cmd_nick_treat(ircs, tab, s);
 }
 
-static void	ircs_cmd_who_treat(t_ircs *ircs, t_fd *fd, char *buff)
+static void	ircs_cmd_who_treat(t_ircs *ircs, t_fd *fd)
 {
 	int		i;
 
-	ft_sprintf(buff, "-1:-1:-1:Users actually connected on %s:", \
-					ircs->chan[fd->chan]);
-	c_buf_write(&(fd->c_buf_send), buff);
+	c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Users actually connected on ");
+	c_buf_write(&(fd->c_buf_send), ircs->chan[fd->chan]);
+	c_buf_write(&(fd->c_buf_send), ":");
 	i = 0;
 	while (i < ircs->maxfd)
 	{
@@ -71,7 +71,6 @@ static void	ircs_cmd_who_treat(t_ircs *ircs, t_fd *fd, char *buff)
 void		ircs_cmd_who(t_ircs *ircs, int s)
 {
 	t_fd	*fd;
-	char	buff[BUFF_PF];
 
 	fd = &(ircs->fds[s]);
 	if (!ircs_havenick(fd))
@@ -81,5 +80,5 @@ void		ircs_cmd_who(t_ircs *ircs, int s)
 		c_buf_write(&(fd->c_buf_send), \
 			"-1:-1:-1:You need choose a channel before !:\n");
 	else
-		ircs_cmd_who_treat(ircs, fd, buff);
+		ircs_cmd_who_treat(ircs, fd);
 }

@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:27:46 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 17:56:51 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/25 15:09:04 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	ircc_init(t_ircc *ircc, int ac, char **av)
 	c_buf_init(&(ircc->c_buf_recv));
 	c_buf_init(&(ircc->c_buf_send));
 	ircc->ip = ft_strdup("");
-	ircc->port = 4242;
+	ircc->port = 6667;
 	if (ac > 1)
 	{
 		free(ircc->ip);

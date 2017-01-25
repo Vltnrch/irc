@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/05 14:15:17 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 12:26:33 by vroche           ###   ########.fr       */
+/*   Updated: 2015/03/13 14:22:24 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ft_strcharpf(t_pf *pf, char c, size_t n)
 {
 	while (n > 0)
 	{
-		if (pf->cnt == BUFF_PF && pf->print)
+		if (pf->cnt == BUFF_PF)
 			ft_pbuff(pf);
 		*(pf->str)++ = c;
 		pf->cnt++;
@@ -35,7 +35,7 @@ void	ft_strncpypf(t_pf *pf, char *src, size_t n)
 {
 	while (n > 0)
 	{
-		if (pf->cnt == BUFF_PF && pf->print)
+		if (pf->cnt == BUFF_PF)
 			ft_pbuff(pf);
 		*(pf->str)++ = *src++;
 		pf->cnt++;

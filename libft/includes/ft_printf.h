@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/05 12:54:11 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 12:43:26 by vroche           ###   ########.fr       */
+/*   Updated: 2015/10/18 14:52:50 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ typedef struct		s_pf
 	int				rcnt;
 	int				fd;
 	struct s_optp	*optp;
-	int				print;
 }					t_pf;
 
 int					ft_pbuff(t_pf *pf);
@@ -74,9 +73,6 @@ int					ft_dprintf(int fd, const char *format, ...);
 int					ft_printf(const char *format, ...);
 int					ft_vdprintf(int fd, const char *format, va_list ap);
 int					ft_vprintf(const char *format, va_list ap);
-
-int					ft_vsprintf(char *str, const char *format, va_list ap);
-int					ft_sprintf(char *str, const char *format, ...);
 
 void				ft_put_di(t_pf *pf, char *s);
 

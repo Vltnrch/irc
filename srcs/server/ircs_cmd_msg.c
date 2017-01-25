@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 18:20:13 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 18:57:47 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/25 16:58:46 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,20 @@
 static void	ircs_cmd_msg_treat(t_ircs *ircs, char *buff, t_fd *fd)
 {
 	int		i;
-	char	wbuff[BUFF_PF];
 
 	i = 0;
 	while (i < ircs->maxfd)
 	{
 		if (ircs->fds[i].type == FD_CLIENT && ircs->fds[i].chan == fd->chan)
 		{
-			ft_sprintf(wbuff, "%s:%s:%s:%s:\n", \
-						CMD_MSG, fd->nick, ircs->chan[fd->chan], buff + 2);
-			c_buf_write(&(ircs->fds[i].c_buf_send), wbuff);
+			c_buf_write(&(ircs->fds[i].c_buf_send), CMD_MSG);
+			c_buf_write(&(ircs->fds[i].c_buf_send), ":");
+			c_buf_write(&(ircs->fds[i].c_buf_send), fd->nick);
+			c_buf_write(&(ircs->fds[i].c_buf_send), ":");
+			c_buf_write(&(ircs->fds[i].c_buf_send), ircs->chan[fd->chan]);
+			c_buf_write(&(ircs->fds[i].c_buf_send), ":");
+			c_buf_write(&(ircs->fds[i].c_buf_send), buff + 2);
+			c_buf_write(&(ircs->fds[i].c_buf_send), ":\n");
 		}
 		i++;
 	}
@@ -47,7 +51,6 @@ void		ircs_cmd_msg(t_ircs *ircs, char *buff, int s)
 
 static void	ircs_cmd_mp_treat(t_ircs *ircs, char **tab, char *buff, t_fd *fd)
 {
-	char	wbuff[BUFF_PF];
 	size_t	size_tab;
 	int		user;
 
@@ -57,12 +60,18 @@ static void	ircs_cmd_mp_treat(t_ircs *ircs, char **tab, char *buff, t_fd *fd)
 	else
 	{
 		size_tab = ft_strlen(tab[0]) + ft_strlen(tab[1]) + 2;
-		ft_sprintf(wbuff, "%s:%s:PM from:%s:\n", CMD_MP, \
-					fd->nick, buff + size_tab);
-		c_buf_write(&(ircs->fds[user].c_buf_send), wbuff);
-		ft_sprintf(wbuff, "%s:%s:PM to:%s:\n", CMD_MP, \
-					ircs->fds[user].nick, buff + size_tab);
-		c_buf_write(&(fd->c_buf_send), wbuff);
+		c_buf_write(&(ircs->fds[user].c_buf_send), CMD_MP);
+		c_buf_write(&(ircs->fds[user].c_buf_send), ":");
+		c_buf_write(&(ircs->fds[user].c_buf_send), fd->nick);
+		c_buf_write(&(ircs->fds[user].c_buf_send), ":PM from:");
+		c_buf_write(&(ircs->fds[user].c_buf_send), buff + size_tab);
+		c_buf_write(&(ircs->fds[user].c_buf_send), ":\n");
+		c_buf_write(&(fd->c_buf_send), CMD_MP);
+		c_buf_write(&(fd->c_buf_send), ":");
+		c_buf_write(&(fd->c_buf_send), ircs->fds[user].nick);
+		c_buf_write(&(fd->c_buf_send), ":PM to:");
+		c_buf_write(&(fd->c_buf_send), buff + size_tab);
+		c_buf_write(&(fd->c_buf_send), ":\n");
 	}
 }
 

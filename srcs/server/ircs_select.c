@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 15:58:08 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 19:37:23 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/25 15:28:07 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,7 @@ static void	ircs_accept(t_ircs *ircs, int s)
 	ircs->fds[ns].chan = -1;
 	c_buf_init(&(ircs->fds[ns].c_buf_recv));
 	c_buf_init(&(ircs->fds[ns].c_buf_send));
-	c_buf_write(&(ircs->fds[ns].c_buf_send), \
-				"-1:-1:-1:Welcome to vroche's IRC Server !:\n");
-	c_buf_write(&(ircs->fds[ns].c_buf_send), \
-				"-1:-1:-1:Choose a nick and a channel before talk!:\n");
+	ircs_welcome_msg(&(ircs->fds[ns]));
 }
 
 void		ircs_init_fd(t_ircs *ircs)
