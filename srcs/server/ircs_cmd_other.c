@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 18:20:57 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/25 17:01:19 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/27 14:15:10 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,4 +81,30 @@ void		ircs_cmd_who(t_ircs *ircs, int s)
 			"-1:-1:-1:You need choose a channel before !:\n");
 	else
 		ircs_cmd_who_treat(ircs, fd);
+}
+
+void		ircs_cmd_list(t_ircs *ircs, int s)
+{
+	t_fd	*fd;
+	int		i;
+
+	fd = &(ircs->fds[s]);
+	if (!ircs_havenick(fd))
+		c_buf_write(&(fd->c_buf_send), \
+			"-1:-1:-1:You need to set a nick before !:\n");
+	else
+	{
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Channel actually open:");
+		i = 0;
+		while (i < MAXCHAN)
+		{
+			if (ircs->chan[i])
+			{
+				c_buf_write(&(fd->c_buf_send), " ");
+				c_buf_write(&(fd->c_buf_send), ircs->chan[i]);
+			}
+			i++;
+		}
+		c_buf_write(&(fd->c_buf_send), ":\n");
+	}
 }

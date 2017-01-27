@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/08 13:30:07 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 17:57:04 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/27 14:11:12 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ static void	ircc_cmd_treat(t_ircc *ircc, char **tab, char *line)
 		ircc_cmd_mp(ircc, tab, line);
 	else if (!ft_strcmp(tab[0], "/who"))
 		ircc_cmd_who(ircc);
+	else if (!ft_strcmp(tab[0], "/list"))
+		ircc_cmd_list(ircc);
 	else if (!ft_strcmp(tab[0], "/disconnect"))
 		ircc_cmd_disconnect(ircc);
 	else if (!ft_strcmp(tab[0], "/connect"))

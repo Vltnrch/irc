@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/25 15:28:32 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/27 14:15:32 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 # define CMD_LEAVE		"3"
 # define CMD_MP			"4"
 # define CMD_WHO		"5"
+# define CMD_LIST		"6"
 
 # define MAXCHAN		20
 # define MAXCHAN_NAME	10
@@ -82,6 +83,7 @@ void			ircs_cmd_mp(t_ircs *ircs, char **tab, char *buff, int s);
 
 void			ircs_cmd_nick(t_ircs *ircs, char **tab, int s);
 void			ircs_cmd_who(t_ircs *ircs, int s);
+void			ircs_cmd_list(t_ircs *ircs, int s);
 
 t_ircs			*get_ircs_struct(void);
 void			ircs_init_signal(void);

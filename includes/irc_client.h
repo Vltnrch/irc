@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/25 14:14:56 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/27 14:11:23 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@
 # define CMD_LEAVE	"3"
 # define CMD_MP		"4"
 # define CMD_WHO	"5"
+# define CMD_LIST	"6"
 
 static char		*g_cmd[] = {
 	"/help",
@@ -48,6 +49,7 @@ static char		*g_cmd[] = {
 	"/who",
 	"/msg",
 	"/quit",
+	"/list",
 	NULL};
 
 typedef struct	s_ircc
@@ -80,6 +82,7 @@ void			ircc_cmd_help();
 void			ircc_cmd_nick(t_ircc *ircc, char **tab);
 void			ircc_cmd_quit(t_ircc *ircc);
 void			ircc_cmd_who(t_ircc *ircc);
+void			ircc_cmd_list(t_ircc *ircc);
 
 t_ircc			*get_ircc_struct(void);
 void			ircc_init_socket(t_ircc *ircc);

@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 16:12:13 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 18:21:22 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/27 14:16:17 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,4 +29,6 @@ void	ircs_cmd(t_ircs *ircs, char **tab, char *buff, int s)
 		ircs_cmd_who(ircs, s);
 	else if (*cmd == *CMD_MSG)
 		ircs_cmd_msg(ircs, buff, s);
+	else if (*cmd == *CMD_LIST)
+		ircs_cmd_list(ircs, s);
 }

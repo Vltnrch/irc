@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 17:01:59 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/25 15:09:38 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/27 14:18:12 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	ircc_cmd_help(void)
 	ft_printf("/join <#chan>		//Join a channel\n");
 	ft_printf("/leave [#channel]	//Leave a channel\n");
 	ft_printf("/who			//Show the user list on your channel\n");
+	ft_printf("/list			//Show the channel list\n");
 	ft_printf("/msg <nick> <message>	");
 	ft_printf("//Send a PM to a user from your channel, with a message\n");
 	ft_printf("/quit			//Exit this program\n");
@@ -53,5 +54,13 @@ void	ircc_cmd_who(t_ircc *ircc)
 	if (!ircc_isconnected(ircc))
 		return ;
 	c_buf_write(&(ircc->c_buf_send), CMD_WHO);
+	c_buf_write(&(ircc->c_buf_send), ":\n");
+}
+
+void	ircc_cmd_list(t_ircc *ircc)
+{
+	if (!ircc_isconnected(ircc))
+		return ;
+	c_buf_write(&(ircc->c_buf_send), CMD_LIST);
 	c_buf_write(&(ircc->c_buf_send), ":\n");
 }
