@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 18:20:13 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/25 16:58:46 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/30 14:24:54 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ void		ircs_cmd_mp(t_ircs *ircs, char **tab, char *buff, int s)
 	else if (fd->chan == -1)
 		c_buf_write(&(fd->c_buf_send), \
 					"-1:-1:-1:You need choose a channel before !:\n");
+	else if (!tab[1])
+		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Choose a nick !:\n");
 	else if (tab[1] && !ft_strcmp(tab[1], fd->nick))
 		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:You can't talk to you !:\n");
 	else if (tab[1])

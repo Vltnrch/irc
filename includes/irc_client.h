@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:28:38 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/27 14:11:23 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/30 12:12:41 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static char		*g_cmd[] = {
 
 typedef struct	s_ircc
 {
-	int			port;
+	char		*port;
 	int			r;
 	int			max;
 	int			socket;

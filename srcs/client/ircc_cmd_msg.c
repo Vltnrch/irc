@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 17:05:18 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/25 18:27:03 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/30 14:55:05 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,26 @@
 
 void	ircc_cmd_mp(t_ircc *ircc, char **tab, char *line)
 {
-	size_t	size_tab;
-
 	if (!ircc_isconnected(ircc))
 		return ;
 	c_buf_write(&(ircc->c_buf_send), CMD_MP);
-	if (tab[2])
+	if (tab[1])
 	{
 		c_buf_write(&(ircc->c_buf_send), ":");
 		c_buf_write(&(ircc->c_buf_send), tab[1]);
-		c_buf_write(&(ircc->c_buf_send), ":");
-		size_tab = ft_strlen(tab[0]) + ft_strlen(tab[1]) + 2;
-		c_buf_write(&(ircc->c_buf_send), line + size_tab);
+		if (tab[2])
+		{
+			c_buf_write(&(ircc->c_buf_send), ":");
+			while (ft_isspace(*line))
+				line++;
+			line += ft_strlen(tab[0]);
+			while (ft_isspace(*line))
+				line++;
+			line += ft_strlen(tab[1]);
+			while (ft_isspace(*line))
+				line++;
+			c_buf_write(&(ircc->c_buf_send), line);
+		}
 	}
 	c_buf_write(&(ircc->c_buf_send), ":\n");
 }

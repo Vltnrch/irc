@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 16:07:06 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/25 18:10:54 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/30 16:25:07 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,26 +24,27 @@ t_ircc		*get_ircc_struct(void)
 
 void		ircc_init_socket(t_ircc *ircc)
 {
-	struct sockaddr_in	sa_in;
 	struct protoent		*pe;
-	struct hostent		*he;
+	struct addrinfo		ai;
+	struct addrinfo		*r_ai;
 
 	ircc->is_connected = 0;
+	ft_bzero(&ai, sizeof(struct addrinfo));
+	ai.ai_family = AF_UNSPEC;
+	ai.ai_socktype = SOCK_STREAM;
+	if ((getaddrinfo(ircc->ip, ircc->port, &ai, &r_ai)) != 0)
+		return (ft_perror("getaddrinfo"));
+	if (!r_ai)
+		return (ft_perror("No result by getaddrinfo"));
 	if (!(pe = getprotobyname("tcp")))
-		ft_perror_exit("getprotobyname");
-	if ((ircc->socket = socket(PF_INET, SOCK_STREAM, pe->p_proto)) < 0)
-		ft_perror_exit("socket");
-	if (!(he = gethostbyname(ircc->ip)))
-		ft_perror_exit("gethostbyname");
-	sa_in.sin_addr = *(struct in_addr *)he->h_addr;
-	sa_in.sin_port = htons(ircc->port);
-	sa_in.sin_family = AF_INET;
-	if (connect(ircc->socket, (struct sockaddr *)&sa_in, \
-				sizeof(struct sockaddr)) == -1)
+		return (ft_perror("getprotobyname"));
+	if ((ircc->socket = socket(r_ai->ai_family, SOCK_STREAM, pe->p_proto)) < 0)
+		return (ft_perror("socket"));
+	if (connect(ircc->socket, r_ai->ai_addr, r_ai->ai_addrlen) == -1)
 		return (ft_perror("connect"));
 	ircc->max = ircc->socket + 1;
 	ircc->is_connected = 1;
-	ft_printf("Connected to: %s:%d\n", ircc->ip, ircc->port);
+	ft_printf("Connected to: %s:%s\n", ircc->ip, ircc->port);
 }
 
 static void	ircc_print(char **tab, char *buff)
@@ -69,9 +70,31 @@ static void	ircc_print(char **tab, char *buff)
 		ft_printf("WRONG PACKET : %s\n", buff);
 }
 
+static void	ircc_core_treat(char *buff)
+{
+	char	*saved_line;
+	int		saved_point;
+	char	**tab;
+
+	if (buff[ft_strlen(buff) - 1] == ':')
+		buff[ft_strlen(buff) - 1] = 0;
+	if (!(tab = ft_strsplit(buff, ':')))
+		ft_perror_exit("ft_strsplit");
+	saved_point = rl_point;
+	saved_line = rl_copy_text(0, rl_end);
+	rl_replace_line("", 0);
+	rl_redisplay();
+	ft_printf("\33[2K\r");
+	ircc_print(tab, buff);
+	rl_replace_line(saved_line, 0);
+	rl_point = saved_point;
+	rl_forced_update_display();
+	free(saved_line);
+	ft_freetab(tab);
+}
+
 void		ircc_core(t_ircc *ircc)
 {
-	char	**tab;
 	char	buff[BUF_SIZE_CBUF + 1];
 
 	while (c_buf_len(&(ircc->c_buf_recv)) > 0)
@@ -79,13 +102,6 @@ void		ircc_core(t_ircc *ircc)
 		if (!c_buf_complete_cmd(&(ircc->c_buf_recv)))
 			return ;
 		c_buf_read_cmd(&(ircc->c_buf_recv), buff);
-		if (buff[ft_strlen(buff) - 1] == ':')
-			buff[ft_strlen(buff) - 1] = 0;
-		if (!(tab = ft_strsplit(buff, ':')))
-			ft_perror_exit("ft_strsplit");
-		ft_printf("\33[2K\r");
-		ircc_print(tab, buff);
-		rl_forced_update_display();
-		ft_freetab(tab);
+		ircc_core_treat(buff);
 	}
 }

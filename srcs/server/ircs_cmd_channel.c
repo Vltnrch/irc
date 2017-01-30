@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 18:19:22 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/25 16:55:56 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/30 14:35:58 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,23 +48,29 @@ void		ircs_cmd_leave(t_ircs *ircs, int s)
 
 static void	ircs_cmd_join_treat(t_ircs *ircs, char **tab, int s)
 {
-	int		num_chat;
+	int		num_chan;
 	t_fd	*fd;
 
 	fd = &(ircs->fds[s]);
-	if ((num_chat = ircs_chanexist(ircs, tab[1])) == -1)
-		num_chat = ircs_chancreate(ircs, tab[1]);
-	if (num_chat == -1)
+	if ((num_chan = ircs_chanexist(ircs, tab[1])) == -1)
+		num_chan = ircs_chancreate(ircs, tab[1]);
+	if (num_chan == -1)
 		c_buf_write(&(fd->c_buf_send), \
 					"-1:-1:-1:Can't create this channel because full !:\n");
 	else
 	{
-		if (fd->chan >= 0)
+		if (fd->chan >= 0 && num_chan != fd->chan)
 			ircs_cmd_leave(ircs, s);
-		fd->chan = num_chat;
-		c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Channel ");
-		c_buf_write(&(fd->c_buf_send), tab[1]);
-		c_buf_write(&(fd->c_buf_send), " join !:\n");
+		if (fd->chan >= 0 && num_chan == fd->chan)
+			c_buf_write(&(fd->c_buf_send), \
+				"-1:-1:-1:You are already on this channel:\n");
+		else
+		{
+			fd->chan = num_chan;
+			c_buf_write(&(fd->c_buf_send), "-1:-1:-1:Channel ");
+			c_buf_write(&(fd->c_buf_send), tab[1]);
+			c_buf_write(&(fd->c_buf_send), " join !:\n");
+		}
 	}
 }
 

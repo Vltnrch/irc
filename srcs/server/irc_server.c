@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:27:46 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/24 19:21:58 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/30 12:32:00 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,19 @@ static void	ircs_init_struct(t_ircs *ircs, char **av)
 
 static void	ircs_init_socket(t_ircs *ircs)
 {
-	struct sockaddr_in	sa_in;
+	struct sockaddr_in6	sa_in6;
 	struct protoent		*pe;
 
 	if (!(pe = getprotobyname("tcp")))
 		ft_perror_exit("getprotobyname");
-	if ((ircs->s = socket(PF_INET, SOCK_STREAM, pe->p_proto)) < 0)
+	if ((ircs->s = socket(PF_INET6, SOCK_STREAM, pe->p_proto)) < 0)
 		ft_perror_exit("socket");
-	sa_in.sin_family = AF_INET;
-	sa_in.sin_addr.s_addr = INADDR_ANY;
-	sa_in.sin_port = htons(ircs->port);
-	if (bind(ircs->s, (struct sockaddr *)&sa_in, \
-				sizeof(struct sockaddr_in)) == -1)
+	ft_bzero(&sa_in6, sizeof(struct sockaddr_in6));
+	sa_in6.sin6_family = AF_INET6;
+	sa_in6.sin6_port = htons(ircs->port);
+	sa_in6.sin6_addr = in6addr_any;
+	if (bind(ircs->s, (struct sockaddr *)&sa_in6, \
+				sizeof(struct sockaddr_in6)) == -1)
 		ft_perror_exit("bind");
 	if (listen(ircs->s, BACKLOG_IRCS) == -1)
 		ft_perror_exit("listen");

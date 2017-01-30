@@ -6,7 +6,7 @@
 /*   By: vroche <vroche@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/24 16:46:27 by vroche            #+#    #+#             */
-/*   Updated: 2017/01/25 18:11:32 by vroche           ###   ########.fr       */
+/*   Updated: 2017/01/30 16:34:16 by vroche           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void		ircc_readline(char *line)
 
 	if (line)
 	{
-		ft_printf("\33[1A\33[2K");
 		if (*line)
 		{
 			ircc = get_ircc_struct();
