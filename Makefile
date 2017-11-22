@@ -16,9 +16,9 @@ NAME_CLIENT = client
 
 NAME_SERVER = serveur
 
-LIB = -L./libft -lft ~/.brew/opt/readline/lib/libreadline.a -ltermcap
+LIB = -L./libft -lft /usr/local/opt/readline/lib/libreadline.a -ltermcap
 
-HDR = -I./libft/includes -I./includes -I/Users/vroche/.brew/opt/readline/include
+HDR = -I./libft/includes -I./includes -I/usr/local/opt/readline/include
 
 FLAGS = -Wall -Wextra -Werror -g
 
@@ -41,7 +41,7 @@ C_SERVER =	srcs/server/irc_server.c \
 			srcs/server/ircs_cmd_msg.c \
 			srcs/server/ircs_cmd_other.c \
 			srcs/server/ircs_manage.c \
-			srcs/server/ircs_select.c 
+			srcs/server/ircs_select.c
 
 O_SERVER = $(C_SERVER:.c=.o)
 
@@ -60,7 +60,7 @@ all: $(NAME)
 
 $(NAME): $(NAME_CLIENT) $(NAME_SERVER)
 
-$(NAME_CLIENT): $(O_COMMON) $(O_CLIENT) 
+$(NAME_CLIENT): $(O_COMMON) $(O_CLIENT)
 	make -C ./libft
 	clang $(FLAGS) $(HDR) $(LIB) $^ -o $@
 
